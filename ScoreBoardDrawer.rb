@@ -6,7 +6,7 @@ class ScoreBoardDrawer
   end
 
   def redraw()
-    puts "should redraw score board with these bits:"
+    #puts "should redraw score board with these bits:"
     puts @gameBoardConnection.getScoreBoardState
   end
 end
