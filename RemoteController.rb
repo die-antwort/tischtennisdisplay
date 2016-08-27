@@ -1,28 +1,22 @@
 class RemoteController
-  def initialize()
-    @commandHistory = Array.new
+  def initialize(commandHistory)
     @commandMap = {}
+    @commandHistory = commandHistory
   end
 
   def setCommand(actionType, command)
     @commandMap[actionType] = command
   end
 
-  def undo() 
-    @commandHistory.pop() #pops itself off the history
-    lastCommand = @commandHistory.pop()
-    if lastCommand != nil
-      lastCommand.undo 
-    end
-  end
-
   def setUndoOnAction(actionType) 
-    @commandMap[actionType] = lambda { || self.undo() }
+    @commandMap[actionType] = lambda { || @commandHistory.undo() }
   end
 
   def onAction(actionType)
     command = @commandMap[actionType]
-    @commandHistory.push(command);
+    #TODO?: Order is important here
+    #cmmandHistory expects todo command to have been pushed to history before it is called
+    @commandHistory.pushCommand(command)
     command.call
   end
 
