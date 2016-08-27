@@ -10,7 +10,10 @@ class RemoteController
 
   def undo() 
     @commandHistory.pop() #pops itself off the history
-    @commandHistory.pop().undo #gets last command and pops it off
+    lastCommand = @commandHistory.pop()
+    if lastCommand != nil
+      lastCommand.undo 
+    end
   end
 
   def setUndoOnAction(actionType) 
