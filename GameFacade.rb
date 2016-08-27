@@ -17,7 +17,7 @@ class GameFacade
     game = Game.new(p1Score, p2Score)
     gameToScoreBoard = GameToScoreBoardConnection.new(game)
     scoreBoardDrawer = ScoreBoardDrawer.new(gameToScoreBoard, @@p1ShiftRegister, @@p2ShiftRegister)
-    scoreBoardDrawer.redraw();
+    subscribeBoardDrawerToScoreChanges(p1Score, p2Score, scoreBoardDrawer)
   end
 
   def getRemoteControlledScore(inputPin) 
@@ -32,6 +32,11 @@ class GameFacade
     remote.setCommand(:click, incrementCommand)
     remote.setUndoOnAction(:doubleClick)
     return remote
+  end
+  
+  def subscribeBoardDrawerToScoreChanges(p1Score, p2Score, boardDrawer)
+    p1Score.onChange { || boardDrawer.redraw() }
+    p2Score.onChange { || boardDrawer.redraw() }
   end
 
 end

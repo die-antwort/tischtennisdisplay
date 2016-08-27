@@ -1,5 +1,5 @@
 class Game
-  @@winningScore = 12
+  @@winningScore = 11
   @@minDifference = 2
 
   def initialize(p1Score, p2Score)
@@ -9,10 +9,10 @@ class Game
 
   def inProgress?() 
     p1Points = @p1Score.points
-    p2Points = @p1Score.points
+    p2Points = @p2Score.points
     dif = (p1Points-p2Points).abs
     return dif < @@minDifference ||
-      [p1Points, p2Points].max < @@winningPoints
+      [p1Points, p2Points].max < @@winningScore
   end
 
   def getLeadingPlayer()
@@ -28,8 +28,8 @@ class Game
 
   def getGameState()
     return {
-      :p1Score => @p1Score,
-      :p2Score => @p2Score,
+      :p1Points => @p1Score.points,
+      :p2Points => @p2Score.points,
       :inProgress => inProgress?,
       :winner => winner
     }
