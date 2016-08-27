@@ -23,7 +23,7 @@ class RemoteController
   def onAction(actionType)
     command = @commandMap[actionType]
     @commandHistory.push(command);
-    command.execute
+    command.call
   end
 
 end

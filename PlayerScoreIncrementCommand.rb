@@ -3,7 +3,7 @@ class PlayerScoreIncrementCommand
     @playerScore = playerScore
   end
 
-  def execute
+  def call
     @playerScore.increment
   end
 
