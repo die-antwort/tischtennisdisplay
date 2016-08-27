@@ -1,11 +1,26 @@
 class RemoteController
   def initialize()
-    @thisWorks = "this works"
+    @commandHistory = Array.new
+    @commandMap = {}
   end
-  def works? 
-    puts @thisWorks
-  end
+
   def setCommand(actionType, command)
-    puts "set command called"
+    @commandMap[actionType] = command
   end
+
+  def undo() 
+    @commandHistory.pop() #pops itself off the history
+    @commandHistory.pop().undo #gets last command and pops it off
+  end
+
+  def setUndoOnAction(actionType) 
+    @commandMap[actionType] = lambda { || self.undo() }
+  end
+
+  def onAction(actionType)
+    command = @commandMap[actionType]
+    @commandHistory.push(command);
+    command.execute
+  end
+
 end
