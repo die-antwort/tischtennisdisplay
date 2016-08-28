@@ -1,17 +1,21 @@
 class PlayerScore
   def initialize
     @points = 0
-    @change_handler = lambda{ || }
+    @change_handlers = Array.new
   end
 
   def increment
     @points += 1
-    @change_handler.call
+    call_all_change_handlers
   end
 
   def decrement
     @points -= 1
-    @change_handler.call
+    call_all_change_handlers
+  end
+
+  def call_all_change_handlers
+    @change_handlers.each { |handler| handler.call }
   end
 
   def score
@@ -21,6 +25,6 @@ class PlayerScore
   attr_reader :points
 
   def on_change(&handler)
-    @change_handler = handler
+    @change_handlers.push(handler)
   end
 end

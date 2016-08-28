@@ -20,6 +20,7 @@ class GameFacade
     game_to_score_board = GameToScoreBoardConnection.new(game)
     score_board_drawer = ScoreBoardDrawer.new(game_to_score_board, @@p1_shift_register, @@p2_shift_register)
     subscribe_board_drawer_to_score_changes(p1_score, p2_score, score_board_drawer)
+    game.on_finished { || puts "facade knows game is finished, rewire remote, tear down current game, start new game on next click" }
   end
 
   def remote_controlled_score(input_pin, command_history)

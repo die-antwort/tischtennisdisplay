@@ -1,7 +1,7 @@
 require "pi_piper"
 include PiPiper
 class RemoteToButtonConnection
-  @@double_click_delay = 0.5
+  @@double_click_delay = 0.2
   def self.connect(button_pin_nr, remote_controller)
     # pin = Pin.new(:pin => button_pin_nr)
     # pin.release

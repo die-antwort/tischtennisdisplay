@@ -3,8 +3,21 @@ class Game
   @@min_difference = 2
 
   def initialize(p1_score, p2_score)
+    @finished_handlers = Array.new
     @p1_score = p1_score
     @p2_score = p2_score
+    subscribe_to_score_changes
+  end
+
+  def subscribe_to_score_changes
+    @p1_score.on_change { || scores_changed }
+    @p2_score.on_change { || scores_changed }
+  end
+
+  def scores_changed
+    unless in_progress?
+      call_all_finished_handlers
+    end
   end
 
   def in_progress?
@@ -33,5 +46,13 @@ class Game
       in_progress: in_progress?,
       winner: winner,
     }
+  end
+
+  def call_all_finished_handlers
+    @finished_handlers.each { |handler| handler.call }
+  end
+
+  def on_finished(&handler)
+    @finished_handlers.push(handler)
   end
 end
