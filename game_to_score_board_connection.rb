@@ -4,8 +4,10 @@ class GameToScoreBoardConnection
   end
 
   def score_board_state
-    # puts "The score board state should be derived from the game state"
-    # puts "game state = "
-    puts @game.game_state.inspect
+    state = @game.game_state
+    {
+      p1_bits: IntegerToScoreBoardBitConverter.convert(state[:p1_points]),
+      p2_bits: IntegerToScoreBoardBitConverter.convert(state[:p2_points])
+    }
   end
 end

@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 require "pi_piper"
 include PiPiper
 require "./game_facade.rb"
