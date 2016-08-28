@@ -14,19 +14,17 @@ class GameFacade
 
   def init_game
     global_command_history = CommandHistory.new
-    puts "input pin 1" + @@p1_button_pin_nr.to_s
     p1_score = remote_controlled_score(@@p1_button_pin_nr, global_command_history)
     p2_score = remote_controlled_score(@@p2_button_pin_nr, global_command_history)
     game = Game.new(p1_score, p2_score)
     game_to_score_board = GameToScoreBoardConnection.new(game)
-    score_board_drawer = ScoreBoardDrawer.new(game_to_score_board, @@p1shift_register, @@p2shift_register)
+    score_board_drawer = ScoreBoardDrawer.new(game_to_score_board, @@p1_shift_register, @@p2_shift_register)
     subscribe_board_drawer_to_score_changes(p1_score, p2_score, score_board_drawer)
   end
 
   def remote_controlled_score(input_pin, command_history)
     score = PlayerScore.new
     remote = remote(PlayerScoreIncrementCommand.new(score), command_history)
-    puts "input pin in game_faceade 1" + input_pin.to_s
     RemoteToButtonConnection.connect(input_pin, remote)
     score
   end

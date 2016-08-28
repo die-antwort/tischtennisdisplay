@@ -5,7 +5,6 @@ class RemoteToButtonConnection
   def self.connect(button_pin_nr, remote_controller)
     # pin = Pin.new(:pin => button_pin_nr)
     # pin.release
-    puts "button pin nr " + button_pin_nr.to_s
     t = nil
     after pin: button_pin_nr, goes: :down, pull: :up do
       puts "low level click"
