@@ -1,7 +1,7 @@
 require "pi_piper"
 include PiPiper
 class RemoteToButtonConnection
-  @@double_click_delay = 0.2
+  DOUBLE_CLICK_DELAY = 0.2
   def self.connect(button_pin_nr, remote_controller)
     # pin = Pin.new(:pin => button_pin_nr)
     # pin.release
@@ -10,16 +10,16 @@ class RemoteToButtonConnection
       puts "low level click"
       if t.nil?
         t = Thread.new{
-          sleep @@double_click_delay
+          sleep DOUBLE_CLICK_DELAY
           puts "click detected"
-          remote_controller.on_action(:click)
+          remote_controller.trigger(:click)
           t = nil
         }
       else
         t.kill
         t = nil
-        puts "doubleClick"
-        remote_controller.on_action(:doubleClick)
+        puts ":double_click"
+        remote_controller.trigger(:double_click)
       end
     end
   end

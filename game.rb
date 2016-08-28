@@ -1,31 +1,27 @@
 class Game
-  @@winning_score = 11
-  @@min_difference = 2
+  WINNING_SCORE = 11
+  MIN_DIFFERENCE = 2
 
   def initialize(p1_score, p2_score)
-    @finished_handlers = Array.new
+    @finished_handlers = []
     @p1_score = p1_score
     @p2_score = p2_score
     subscribe_to_score_changes
   end
 
   def subscribe_to_score_changes
-    @p1_score.on_change { || scores_changed }
-    @p2_score.on_change { || scores_changed }
+    @p1_score.on_change{ scores_changed }
+    @p2_score.on_change{ scores_changed }
   end
 
   def scores_changed
-    unless in_progress?
-      call_all_finished_handlers
-    end
+    call_all_finished_handlers unless in_progress?
   end
 
   def in_progress?
     p1_points = @p1_score.points
     p2_points = @p2_score.points
-    dif = (p1_points - p2_points).abs
-    dif < @@min_difference ||
-      [p1_points, p2_points].max < @@winning_score
+    (p1_points - p2_points).abs < MIN_DIFFERENCE || [p1_points, p2_points].max < WINNING_SCORE
   end
 
   def leading_player
@@ -33,10 +29,7 @@ class Game
   end
 
   def winner
-    unless in_progress?
-      return leading_player
-    end
-    nil
+    leading_player unless in_progress?
   end
 
   def game_state
@@ -49,7 +42,7 @@ class Game
   end
 
   def call_all_finished_handlers
-    @finished_handlers.each { |handler| handler.call }
+    @finished_handlers.each(&:call)
   end
 
   def on_finished(&handler)

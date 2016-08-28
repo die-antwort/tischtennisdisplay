@@ -1,7 +1,9 @@
 class PlayerScore
+  attr_reader :points
+
   def initialize
     @points = 0
-    @change_handlers = Array.new
+    @change_handlers = []
   end
 
   def increment
@@ -14,17 +16,13 @@ class PlayerScore
     call_all_change_handlers
   end
 
-  def call_all_change_handlers
-    @change_handlers.each { |handler| handler.call }
-  end
-
-  def score
-    @points
-  end
-
-  attr_reader :points
-
   def on_change(&handler)
     @change_handlers.push(handler)
+  end
+
+  private
+
+  def call_all_change_handlers
+    @change_handlers.each(&:call)
   end
 end
