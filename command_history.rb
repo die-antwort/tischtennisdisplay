@@ -7,7 +7,10 @@ class CommandHistory
     @history.pop # pops itself off the history
     last_command = @history.pop
     unless last_command.nil?
-      last_command.undo
+      unless last_command.undo
+        puts "undo stopper"
+        @history.push(last_command)
+      end
     end
   end
 

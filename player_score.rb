@@ -12,7 +12,17 @@ class PlayerScore
   end
 
   def decrement
-    @points -= 1
+    @points = @points > 0 ? @points - 1 : 0
+    call_all_change_handlers
+  end
+
+  def reset
+    @points = 0
+    call_all_change_handlers
+  end
+
+  def set(points)
+    @points = points
     call_all_change_handlers
   end
 

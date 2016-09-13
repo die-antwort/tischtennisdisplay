@@ -1,12 +1,11 @@
 class IntegerToScoreBoardBitConverter
   def self.convert(int)
-    bits = self.convert_digit(int%10)
-    if int/10 > 0 
-      bits = bits + 0x80
+    bits = convert_digit(int % 10)
+    if int / 10 > 0
+      bits += 0x80
     end
-    return bits;
+    bits
   end
-  private
 
   def self.convert_digit(int)
     case int

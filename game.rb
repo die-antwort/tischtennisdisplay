@@ -1,6 +1,6 @@
 class Game
-  WINNING_SCORE = 11
-  MIN_DIFFERENCE = 2
+  WINNING_SCORE = 2
+  MIN_DIFFERENCE = 0
 
   def initialize(p1_score, p2_score)
     @finished_handlers = []
