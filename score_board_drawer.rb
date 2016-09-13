@@ -9,43 +9,33 @@ class ScoreBoardDrawer
     @p2_shift_register = p2_shift_register
     @game_board_connection = game_board_connection
     init_clock_pin
-    @t = false
   end
 
   def redraw
     score_board_state = @game_board_connection.score_board_state
-    puts("redrawing");
-    if (!score_board_state[:blinking]) 
-      if @t && @t.status 
-        puts("killing thread")
-        Thread.kill(@t)
-        redraw
-      end
-    end
+    Thread.kill(@t) if !score_board_state[:blinking] && @t && @t.alive? 
     File.write(@p1_shift_register, score_board_state[:p1_bits].chr)
     File.write(@p2_shift_register, score_board_state[:p2_bits].chr)
     clock
-    if (score_board_state[:blinking]) 
+    if score_board_state[:blinking] && (!@t || !@t.alive?) 
       @t = Thread.new{
-        puts 1;
-        sleep(BLINKING_DELAY)
-        puts 2;
-        File.write(@p1_shift_register, 0.chr)
-        File.write(@p2_shift_register, 0.chr)
-        puts 3;
-        clock
-        puts 4;
-        sleep(BLINKING_DELAY)
-        puts 5;
-        redraw
-        puts 6;
+        loop do
+          sleep(BLINKING_DELAY)
+          File.write(@p1_shift_register, 0.chr)
+          File.write(@p2_shift_register, 0.chr)
+          clock
+          sleep(BLINKING_DELAY)
+          File.write(@p1_shift_register, score_board_state[:p1_bits].chr)
+          File.write(@p2_shift_register, score_board_state[:p2_bits].chr)
+          clock
+        end
       }
     end
 
   end
 
   def init_clock_pin
-    @clock_pin = PiPiper::Pin.new(pin: 25, direction: :out)
+    @clock_pin = PiPiper::Pin.new(pin: 17, direction: :out)
     @clock_pin.on
   end
 

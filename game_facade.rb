@@ -9,8 +9,8 @@ require './player_score_reset_command.rb'
 require './game.rb'
 require './state_history.rb'
 class GameFacade
-  P1_BUTTON_PIN_NR = 14
-  P2_BUTTON_PIN_NR = 15
+  P1_BUTTON_PIN_NR = 3
+  P2_BUTTON_PIN_NR = 2
   P1_SHIFT_REGISTER = '/dev/spidev0.0'.freeze
   P2_SHIFT_REGISTER = '/dev/spidev0.1'.freeze
 
