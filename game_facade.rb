@@ -7,6 +7,7 @@ require './score_board_drawer.rb'
 require './command_history.rb'
 require './player_score_reset_command.rb'
 require './game.rb'
+require './state_history.rb'
 class GameFacade
   P1_BUTTON_PIN_NR = 14
   P2_BUTTON_PIN_NR = 15
@@ -22,13 +23,16 @@ class GameFacade
     RemoteToButtonConnection.connect(P1_BUTTON_PIN_NR, @p1_remote)
     RemoteToButtonConnection.connect(P2_BUTTON_PIN_NR, @p2_remote)
     clicks_increment
-    setup_redrawing_game.on_finished{ clicks_start_new_game }
+    @game = setup_redrawing_game
+    @game.on_finished{ clicks_start_new_game }
+    @state_history = StateHistory.new(command_history, @game)
   end
 
   def clicks_increment
-    @p1_remote.on(:click, player_score_increment_command(@p1_score, @p1_remote))
-    @p2_remote.on(:click, player_score_increment_command(@p2_score, @p2_remote))
+    @p1_remote.on(:click, player_score_increment_command(@p1_score))
+    @p2_remote.on(:click, player_score_increment_command(@p2_score))
   end
+
 
   def setup_redrawing_game
     game = Game.new(@p1_score, @p2_score)
@@ -41,15 +45,22 @@ class GameFacade
 
   def clicks_start_new_game
     puts "game finished"
-    new_game_command = PlayerScoreResetCommand.new(@p1_score, @p2_score, on_call: lambda{ clicks_increment })
+    new_game_command = PlayerScoreResetCommand.new(@p1_score, @p2_score, on_call: lambda{ commit_state_history; clicks_increment })
     @p1_remote.on(:click, new_game_command)
     @p2_remote.on(:click, new_game_command)
   end
 
+  def commit_state_history
+    puts "game commited"
+    puts @state_history.history
+    @state_history.clear
+  end
 
-  def player_score_increment_command(score, remote)
+
+  def player_score_increment_command(score)
     PlayerScoreIncrementCommand.new(score, on_undo: lambda{
-      remote.on(:click, PlayerScoreIncrementCommand.new(score))
+    @p1_remote.on(:click, player_score_increment_command(@p1_score))
+    @p2_remote.on(:click, player_score_increment_command(@p2_score))
     })
   end
 

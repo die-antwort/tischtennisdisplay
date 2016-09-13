@@ -1,6 +1,6 @@
 class Game
-  WINNING_SCORE = 2
-  MIN_DIFFERENCE = 0
+  WINNING_SCORE = 11
+  MIN_DIFFERENCE = 2
 
   def initialize(p1_score, p2_score)
     @finished_handlers = []
@@ -32,7 +32,7 @@ class Game
     leading_player unless in_progress?
   end
 
-  def game_state
+  def state
     {
       p1_points: @p1_score.points,
       p2_points: @p2_score.points,
