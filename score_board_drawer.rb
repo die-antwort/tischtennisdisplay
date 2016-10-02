@@ -4,11 +4,11 @@ require "./integer_to_score_board_converter"
 
 class ScoreBoardDrawer
   BLINKING_DELAY = 0.5
-  def initialize(game_board_connection, p1_shift_register, p2_shift_register)
+  def initialize(game_board_connection, p1_shift_register, p2_shift_register, clock_pin)
     @p1_shift_register = p1_shift_register
     @p2_shift_register = p2_shift_register
     @game_board_connection = game_board_connection
-    init_clock_pin
+    init_clock_pin(clock_pin)
   end
 
   def redraw
@@ -34,8 +34,8 @@ class ScoreBoardDrawer
 
   end
 
-  def init_clock_pin
-    @clock_pin = PiPiper::Pin.new(pin: 17, direction: :out)
+  def init_clock_pin(clock_pin)
+    @clock_pin = PiPiper::Pin.new(pin: clock_pin, direction: :out)
     @clock_pin.on
   end
 

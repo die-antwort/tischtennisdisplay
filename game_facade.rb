@@ -9,21 +9,17 @@ require './player_score_reset_command.rb'
 require './game.rb'
 require './state_history.rb'
 class GameFacade
-  P1_BUTTON_PIN_NR = 3
-  P2_BUTTON_PIN_NR = 2
-  P1_SHIFT_REGISTER = '/dev/spidev0.0'.freeze
-  P2_SHIFT_REGISTER = '/dev/spidev0.1'.freeze
 
-  def initialize
+  def initialize(p1_button_pin:, p2_button_pin:, clock_pin:, p1_shift_register:, p2_shift_register:)
     @p1_score = PlayerScore.new
     @p2_score = PlayerScore.new
     command_history = CommandHistory.new
     @p1_remote = RemoteController.new(command_history)
     @p2_remote = RemoteController.new(command_history)
-    RemoteToButtonConnection.connect(P1_BUTTON_PIN_NR, @p1_remote)
-    RemoteToButtonConnection.connect(P2_BUTTON_PIN_NR, @p2_remote)
+    RemoteToButtonConnection.connect(p1_button_pin, @p1_remote)
+    RemoteToButtonConnection.connect(p2_button_pin, @p2_remote)
     clicks_increment
-    @game = setup_redrawing_game
+    @game = setup_redrawing_game(p1_shift_register, p2_shift_register, clock_pin)
     @game.on_finished{ clicks_start_new_game }
     @state_history = StateHistory.new(command_history, @game)
   end
@@ -34,10 +30,10 @@ class GameFacade
   end
 
 
-  def setup_redrawing_game
+  def setup_redrawing_game(p1_shift_register, p2_shift_register, clock_pin)
     game = Game.new(@p1_score, @p2_score)
     game_to_score_board = GameToScoreBoardConnection.new(game)
-    score_board_drawer = ScoreBoardDrawer.new(game_to_score_board, P1_SHIFT_REGISTER, P2_SHIFT_REGISTER)
+    score_board_drawer = ScoreBoardDrawer.new(game_to_score_board, p1_shift_register, p2_shift_register, clock_pin)
     subscribe_board_drawer_to_score_changes(@p1_score, @p2_score, score_board_drawer)
     score_board_drawer.redraw
     game
