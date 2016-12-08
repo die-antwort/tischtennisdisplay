@@ -3,7 +3,7 @@
 PINS = {
   p1_button_pin: 3,
   p2_button_pin: 2,
-  clock_pin: 25,
+  clock_pin: 17,
 }.freeze
 
 P1_SHIFT_REGISTER = '/dev/spidev0.0'.freeze
