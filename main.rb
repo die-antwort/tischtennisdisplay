@@ -16,9 +16,9 @@ end
 
 require "pi_piper"
 include PiPiper
-require "./game_facade.rb"
+require "./continuous_table_tennis_score_board.rb"
 Thread.abort_on_exception = true
 
-GameFacade.new(**PINS, p1_shift_register: P1_SHIFT_REGISTER, p2_shift_register: P2_SHIFT_REGISTER)
+ContinuousTableTennisScoreBoard.new(**PINS, p1_shift_register: P1_SHIFT_REGISTER, p2_shift_register: P2_SHIFT_REGISTER)
 
 wait

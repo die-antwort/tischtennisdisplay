@@ -6,6 +6,9 @@ class Game
     @finished_handlers = []
     @p1_score = p1_score
     @p2_score = p2_score
+    @p1_won_sets = 0
+    @p2_won_sets = 0
+    @current_set = 0
     subscribe_to_score_changes
   end
 
@@ -34,6 +37,7 @@ class Game
 
   def state
     {
+      current_set: @current_set,
       p1_points: @p1_score.points,
       p2_points: @p2_score.points,
       in_progress: in_progress?,
