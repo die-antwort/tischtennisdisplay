@@ -1,55 +1,42 @@
+require_relative "game_state"
+
 class Game
-  WINNING_SCORE = 11 
-  MIN_DIFFERENCE = 0
-
-  def initialize(p1_score, p2_score)
-    @finished_handlers = []
-    @p1_score = p1_score
-    @p2_score = p2_score
-    @p1_won_sets = 0
-    @p2_won_sets = 0
-    @current_set = 0
-    subscribe_to_score_changes
+  attr_accessor :input
+  attr_reader :game_state
+  %i(p1_score p2_score p1_set_score p2_set_score set winner).each do |method|
+    define_method method do
+      game_state.public_send(method)
+    end
   end
 
-  def subscribe_to_score_changes
-    @p1_score.on_change{ scores_changed }
-    @p2_score.on_change{ scores_changed }
+  def initialize(input)
+    self.input = input
+    @history = []
   end
 
-  def scores_changed
-    call_all_finished_handlers unless in_progress?
+  def run 
+    loop do 
+      while input.empty?
+      end
+      c = input.shift
+      break if c == 'x'
+      @history.push(c)
+      @game_state = GameState.new(@history)
+      break if @game_state.game_finished?
+    end
   end
 
-  def in_progress?
-    p1_points = @p1_score.points
-    p2_points = @p2_score.points
-    (p1_points - p2_points).abs < MIN_DIFFERENCE || [p1_points, p2_points].max < WINNING_SCORE
+
+  def inspect
+    return <<~EOF
+      {
+        p1_score: #{p1_score}
+        p2_score: #{p2_score}
+        set: #{set}
+        p1_set_score: #{p1_set_score}
+        p2_set_score: #{p2_set_score}
+      }
+    EOF
   end
 
-  def leading_player
-    @p1_score.points > @p2_score.points ? :p1 : :p2
-  end
-
-  def winner
-    leading_player unless in_progress?
-  end
-
-  def state
-    {
-      current_set: @current_set,
-      p1_points: @p1_score.points,
-      p2_points: @p2_score.points,
-      in_progress: in_progress?,
-      winner: winner,
-    }
-  end
-
-  def call_all_finished_handlers
-    @finished_handlers.each(&:call)
-  end
-
-  def on_finished(&handler)
-    @finished_handlers.push(handler)
-  end
 end
