@@ -20,17 +20,17 @@ end
 Thread.abort_on_exception = true
 
 require_relative "game";
-input = []
-
-Thread.new do 
-  loop do
-    input.concat(gets.chomp.split(""))
+game = Game.new
+loop  do
+  gets.chomp.split("").each do |c| 
+    game.handle_input(c)
   end
+  puts game.inspect
 end
 
 
 
-Game.new(input).run
+
 
 #Game.new(**PINS, p1_shift_register: P1_SHIFT_REGISTER, p2_shift_register: P2_SHIFT_REGISTER)
 
