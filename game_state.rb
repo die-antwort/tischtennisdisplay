@@ -48,12 +48,15 @@ class GameState
     else
       $stderr.puts "Unknown command '#{c}'"
     end
+    if set_finished? 
+      self.p1_set_score += p1_score > p2_score ? 1 : 0
+      self.p2_set_score += p2_score > p1_score ? 1 : 0
+    end
   end
 
   def start_new_set 
-    self.p1_set_score += p1_score > p2_score ? 1 : 0
-    self.p2_set_score += p2_score > p1_score ? 1 : 0
     self.p1_score = self.p2_score = 0
+    self.set += 1
   end
 
   def inspect
