@@ -34,7 +34,7 @@ RSpec.describe Game  do
   end
 
   it "knows who won" do
-    input = %w(1) * (3*11-1)
+    input = %w(1) * (3*12-1)
     game = game_with_input_sequence(input)
     expect(game.winner).to be_nil
     game.handle_input('1')
@@ -53,7 +53,7 @@ RSpec.describe Game  do
   end
   
   it "can undo across sets" do
-    game = game_with_input_sequence(%w(1) * 11)
+    game = game_with_input_sequence(%w(1) * 12)
     expect(game.p1_set_score).to eq(1)
     game.undo
     expect(game.p1_set_score).to eq(0)

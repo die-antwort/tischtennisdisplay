@@ -19,11 +19,10 @@ class GameState
   end
 
   def update_state(c)
-    handle_input(c) unless game_finished?
     if set_finished?
-      self.p1_set_score += p1_score > p2_score ? 1 : 0
-      self.p2_set_score += p2_score > p1_score ? 1 : 0
-      self.p1_score = self.p2_score = 0
+      start_new_set
+    else
+      handle_input(c) unless game_finished?
     end
   end
 
@@ -51,15 +50,21 @@ class GameState
     end
   end
 
+  def start_new_set 
+    self.p1_set_score += p1_score > p2_score ? 1 : 0
+    self.p2_set_score += p2_score > p1_score ? 1 : 0
+    self.p1_score = self.p2_score = 0
+  end
+
   def inspect
     return <<~EOF
-      {
-        p1_score: #{p1_score}
-        p2_score: #{p2_score}
-        set: #{set}
-        p1_set_score: #{p1_set_score}
-        p2_set_score: #{p2_set_score}
-      }
+    {
+      p1_score: #{p1_score}
+      p2_score: #{p2_score}
+      set: #{set}
+      p1_set_score: #{p1_set_score}
+      p2_set_score: #{p2_set_score}
+    }
     EOF
   end
 
