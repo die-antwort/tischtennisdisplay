@@ -17,6 +17,11 @@ class Game
     @game_state = GameState.new(@history)
   end
 
+  def undo
+    @history.pop()
+    @game_state = GameState.new(@history)
+  end
+
   def inspect
     return <<~EOF
       {

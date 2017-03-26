@@ -23,7 +23,11 @@ require_relative "game";
 game = Game.new
 loop  do
   gets.chomp.split("").each do |c| 
-    game.handle_input(c)
+    if (c == 'u') 
+      game.undo
+    else 
+      game.handle_input(c)
+    end
   end
   puts game.inspect
 end

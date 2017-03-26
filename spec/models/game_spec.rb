@@ -45,6 +45,20 @@ RSpec.describe Game  do
     #input = %w(1) * (3*11-1)
   end
 
+  it "can undo" do 
+    game = game_with_input_sequence(%w(1 1 2 2 1))
+    expect(game.p1_score).to eq(3)
+    game.undo
+    expect(game.p1_score).to eq(2)
+  end
+  
+  it "can undo across sets" do
+    game = game_with_input_sequence(%w(1) * 11)
+    expect(game.p1_set_score).to eq(1)
+    game.undo
+    expect(game.p1_set_score).to eq(0)
+  end
+
 
 end
 
