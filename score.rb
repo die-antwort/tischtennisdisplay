@@ -1,4 +1,4 @@
-class GameState
+class Score
   attr_accessor :p1_score, :p2_score, :p1_set_score, :p2_set_score, :set
 
   WINNING_SCORE = 11
@@ -12,17 +12,27 @@ class GameState
     self.p2_score = 0
     self.p1_set_score = 0
     self.p2_set_score = 0
-    self.set = 0
+    self.set = 1
+    @changed_over_in_final_set = false
+    @mapping = {
+      'a' => -> { @p1_score += 1 },
+      'b' => -> { @p2_score += 1 },
+    }
     input.each do |c|
       update_state c
     end
   end
 
   def update_state(c)
+    return if game_finished?
     if set_finished?
+      change_over
       start_new_set
+    elsif final_set_at_changeover_score? && !@changed_over_in_final_set
+      change_over
+      @changed_over_in_final_set = true
     else
-      handle_input(c) unless game_finished?
+      handle_input(c)
     end
   end
 
@@ -39,12 +49,14 @@ class GameState
     (p1_set_score - p2_set_score).abs >= MIN_SET_DIFFERENCE && [p1_set_score, p2_set_score].max >= WINNING_SET_SCORE
   end
 
+  def final_set_at_changeover_score?
+    return set == WINNING_SET_SCORE*2 - 1 && p1_score+p2_score == 7
+  end
+
   def handle_input(c)
     case c
-    when '1'
-      self.p1_score += 1
-    when '2'
-      self.p2_score += 1 
+    when 'a', 'b'
+      @mapping[c].call
     else
       $stderr.puts "Unknown command '#{c}'"
     end
@@ -52,6 +64,12 @@ class GameState
       self.p1_set_score += p1_score > p2_score ? 1 : 0
       self.p2_set_score += p2_score > p1_score ? 1 : 0
     end
+  end
+
+  def change_over
+    tmp = @mapping['a']
+    @mapping['a'] = @mapping['b']
+    @mapping['b'] = tmp
   end
 
   def start_new_set 

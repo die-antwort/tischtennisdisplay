@@ -1,10 +1,10 @@
-require_relative "game_state"
+require_relative "score"
 
 class Game
-  attr_reader :game_state
-  %i(p1_score p2_score p1_set_score p2_set_score set winner).each do |method|
+  attr_reader :score
+  %i(p1_score p2_score p1_set_score p2_set_score set winner game_finished?).each do |method|
     define_method method do
-      game_state.public_send(method)
+      score.public_send(method)
     end
   end
 
@@ -14,12 +14,12 @@ class Game
 
   def handle_input(c)
     @history.push(c)
-    @game_state = GameState.new(@history)
+    @score = Score.new(@history)
   end
 
   def undo
     @history.pop()
-    @game_state = GameState.new(@history)
+    @score = Score.new(@history)
   end
 
   def inspect
