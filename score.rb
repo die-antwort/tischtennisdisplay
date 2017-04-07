@@ -15,8 +15,8 @@ class Score
     self.set = 1
     @changed_over_in_final_set = false
     @mapping = {
-      'a' => -> { @p1_score += 1 },
-      'b' => -> { @p2_score += 1 },
+      'l' => -> { @p1_score += 1 },
+      'r' => -> { @p2_score += 1 },
     }
     input.each do |c|
       update_state c
@@ -55,7 +55,7 @@ class Score
 
   def handle_input(c)
     case c
-    when 'a', 'b'
+    when 'l', 'r'
       @mapping[c].call
     else
       $stderr.puts "Unknown command '#{c}'"
@@ -67,9 +67,9 @@ class Score
   end
 
   def change_over
-    tmp = @mapping['a']
-    @mapping['a'] = @mapping['b']
-    @mapping['b'] = tmp
+    tmp = @mapping['l']
+    @mapping['l'] = @mapping['r']
+    @mapping['r'] = tmp
   end
 
   def start_new_set 
