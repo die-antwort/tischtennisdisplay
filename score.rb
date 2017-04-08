@@ -102,5 +102,14 @@ class Score
     }
     EOF
   end
+  
+  def ==(o) 
+    return false unless o.class == self.class 
+    o.p1_score == p1_score &&
+      o.p2_score == p2_score &&
+      o.set == set &&
+      o.p1_set_score == p1_set_score &&
+      o.p2_set_score == p2_set_score 
+  end
 
 end
