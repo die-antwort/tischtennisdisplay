@@ -4,7 +4,7 @@ class Score
   WINNING_SCORE = 11
   MIN_DIFFERENCE = 2
 
-  WINNING_SET_SCORE = 2
+  WINNING_SET_SCORE = 3
   MIN_SET_DIFFERENCE = 1
 
   def initialize(input)
