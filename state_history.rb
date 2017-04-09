@@ -14,9 +14,7 @@ class StateHistory
     @history.pop
   end
 
-  def history
-    @history
-  end
+  attr_reader :history
 
   def clear
     @history = []

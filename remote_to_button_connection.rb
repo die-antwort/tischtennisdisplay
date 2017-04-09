@@ -6,7 +6,7 @@ class RemoteToButtonConnection
   def self.connect(button_pin_nr, remote_controller)
     t = nil
     after pin: button_pin_nr, goes: :down, pull: :up do
-      sleep(DEBOUNCE_DELAY) #debounce button (min click time-'distance')
+      sleep(DEBOUNCE_DELAY) # debounce button (min click time-'distance')
       if t.nil? || !t.alive?
         t = Thread.new{
           sleep DOUBLE_CLICK_DELAY

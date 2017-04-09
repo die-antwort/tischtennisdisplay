@@ -13,11 +13,11 @@ class ScoreBoardDrawer
 
   def redraw
     score_board_state = @game_board_connection.score_board_state
-    Thread.kill(@t) if !score_board_state[:blinking] && @t && @t.alive? 
+    Thread.kill(@t) if !score_board_state[:blinking] && @t && @t.alive?
     File.write(@p1_shift_register, score_board_state[:p1_bits].chr)
     File.write(@p2_shift_register, score_board_state[:p2_bits].chr)
     clock
-    if score_board_state[:blinking] && (!@t || !@t.alive?) 
+    if score_board_state[:blinking] && (!@t || !@t.alive?)
       @t = Thread.new{
         loop do
           sleep(BLINKING_DELAY)
@@ -31,7 +31,6 @@ class ScoreBoardDrawer
         end
       }
     end
-
   end
 
   def init_clock_pin(clock_pin)
