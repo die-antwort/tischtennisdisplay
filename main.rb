@@ -28,7 +28,7 @@ def update_score_board(score)
       {blink: score.winner_side}
     elsif score.set_finished?
       {blink: :both}
-    elsif score.final_set_at_changeover_score?
+    elsif score.waiting_for_final_set_change_over?
       {blink: :both}
     else
       {}

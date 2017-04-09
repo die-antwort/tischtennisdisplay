@@ -25,7 +25,7 @@ class Score
     if set_finished?
       change_over
       start_new_set
-    elsif final_set_at_changeover_score? && !@changed_over_in_final_set
+    elsif waiting_for_final_set_change_over?
       change_over
       @changed_over_in_final_set = true
     else
@@ -58,8 +58,9 @@ class Score
     (p1_set_score - p2_set_score).abs >= MIN_SET_DIFFERENCE && [p1_set_score, p2_set_score].max >= WINNING_SET_SCORE
   end
 
-  def final_set_at_changeover_score?
-    return set == WINNING_SET_SCORE*2 - 1 && p1_score+p2_score == 7
+  def waiting_for_final_set_change_over?
+    return set == WINNING_SET_SCORE*2 - 1 && p1_score+p2_score == 7 && 
+      !@changed_over_in_final_set
   end
 
   def handle_input(c)
