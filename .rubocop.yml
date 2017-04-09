@@ -1,1 +1,7 @@
 inherit_from: https://raw.githubusercontent.com/die-antwort/style/master/rubocop.yml
+AllCops:
+  TargetRubyVersion: 2.3
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'

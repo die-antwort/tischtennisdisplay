@@ -14,7 +14,7 @@ class Score
     self.p2_set_score = 0
     self.set = 1
     @changed_over_in_final_set = false
-    @player_on = { left: 1, right: 2 }
+    @player_on = {left: 1, right: 2}
     input.each do |c|
       update_state c
     end
@@ -34,7 +34,7 @@ class Score
   end
 
   def winner
-    return unless game_finished? 
+    return unless game_finished?
     p1_set_score > p2_set_score ? 1 : 2
   end
 
@@ -59,7 +59,7 @@ class Score
   end
 
   def waiting_for_final_set_change_over?
-    return set == WINNING_SET_SCORE*2 - 1 && p1_score+p2_score == 7 && 
+    set == WINNING_SET_SCORE * 2 - 1 && p1_score + p2_score == 7 &&
       !@changed_over_in_final_set
   end
 
@@ -75,7 +75,7 @@ class Score
     else
       $stderr.puts "Unknown command '#{c}'"
     end
-    if set_finished? 
+    if set_finished?
       self.p1_set_score += p1_score > p2_score ? 1 : 0
       self.p2_set_score += p2_score > p1_score ? 1 : 0
     end
@@ -87,13 +87,13 @@ class Score
     @player_on[:right] = tmp
   end
 
-  def start_new_set 
+  def start_new_set
     self.p1_score = self.p2_score = 0
     self.set += 1
   end
 
   def inspect
-    return <<~EOF
+    <<~EOF
     {
       p1_score: #{p1_score}
       p2_score: #{p2_score}
@@ -103,14 +103,13 @@ class Score
     }
     EOF
   end
-  
-  def ==(o) 
-    return false unless o.class == self.class 
-    o.p1_score == p1_score &&
-      o.p2_score == p2_score &&
-      o.set == set &&
-      o.p1_set_score == p1_set_score &&
-      o.p2_set_score == p2_set_score 
-  end
 
+  def ==(other)
+    return false unless other.class == self.class
+    other.p1_score == p1_score &&
+      other.p2_score == p2_score &&
+      other.set == set &&
+      other.p1_set_score == p1_set_score &&
+      other.p2_set_score == p2_set_score
+  end
 end

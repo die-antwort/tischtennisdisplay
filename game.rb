@@ -18,12 +18,12 @@ class Game
   end
 
   def undo
-    @history.pop()
+    @history.pop
     @score = Score.new(@history)
   end
 
   def inspect
-    return <<~EOF
+    <<~EOF
       {
         p1_score: #{p1_score}
         p2_score: #{p2_score}
@@ -33,5 +33,4 @@ class Game
       }
     EOF
   end
-
 end
