@@ -37,4 +37,8 @@ RSpec.describe Game do
     game.undo
     expect(game.score).to eq(original_score)
   end
+
+  it 'has a valid score even if the input is empty' do
+    expect(Game.new.score).to_not be_nil
+  end
 end

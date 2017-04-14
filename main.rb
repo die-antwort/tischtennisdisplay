@@ -36,8 +36,10 @@ def update_score_board(score)
   @score_board.display(score.for_side(:left), score.for_side(:right), **options)
 end
 
-game = Game.new
 @score_board = ConsoleScoreBoard.new
+@score_board.display("3", "5", blink: :both)
+max_set_count = $stdin.getc == 'l' ? 3 : 5
+game = Game.new(max_set_count: max_set_count)
 loop do
   gets.chomp.split("").each do |c|
     if c == 'u'

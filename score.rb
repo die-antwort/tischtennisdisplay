@@ -1,18 +1,18 @@
 class Score
-  attr_accessor :p1_score, :p2_score, :p1_set_score, :p2_set_score, :set
+  attr_reader :p1_score, :p2_score, :p1_set_score, :p2_set_score, :set, :winning_set_score
 
   WINNING_SCORE = 11
   MIN_DIFFERENCE = 2
 
-  WINNING_SET_SCORE = 3
   MIN_SET_DIFFERENCE = 1
 
-  def initialize(input)
-    self.p1_score = 0
-    self.p2_score = 0
-    self.p1_set_score = 0
-    self.p2_set_score = 0
-    self.set = 1
+  def initialize(input, max_set_count: 3)
+    @p1_score = 0
+    @p2_score = 0
+    @p1_set_score = 0
+    @p2_set_score = 0
+    @set = 1
+    @winning_set_score = winning_set_score_for_max_set_count(max_set_count)
     @changed_over_in_final_set = false
     @player_on = {left: 1, right: 2}
     input.each do |c|
@@ -55,11 +55,11 @@ class Score
   end
 
   def game_finished?
-    (p1_set_score - p2_set_score).abs >= MIN_SET_DIFFERENCE && [p1_set_score, p2_set_score].max >= WINNING_SET_SCORE
+    (p1_set_score - p2_set_score).abs >= MIN_SET_DIFFERENCE && [p1_set_score, p2_set_score].max >= winning_set_score
   end
 
   def waiting_for_final_set_change_over?
-    set == WINNING_SET_SCORE * 2 - 1 && p1_score + p2_score == 7 &&
+    set == winning_set_score * 2 - 1 && p1_score + p2_score == 7 &&
       !@changed_over_in_final_set
   end
 
@@ -76,8 +76,8 @@ class Score
       $stderr.puts "Unknown command '#{c}'"
     end
     if set_finished?
-      self.p1_set_score += p1_score > p2_score ? 1 : 0
-      self.p2_set_score += p2_score > p1_score ? 1 : 0
+      @p1_set_score += p1_score > p2_score ? 1 : 0
+      @p2_set_score += p2_score > p1_score ? 1 : 0
     end
   end
 
@@ -88,8 +88,13 @@ class Score
   end
 
   def start_new_set
-    self.p1_score = self.p2_score = 0
-    self.set += 1
+    @p1_score = @p2_score = 0
+    @set += 1
+  end
+
+  def winning_set_score_for_max_set_count(max_set_count)
+    raise ArgumentError, "max_set_count must be an odd number greater than 0" if max_set_count < 1 || max_set_count.even?
+    (max_set_count / 2.0).ceil
   end
 
   def inspect
