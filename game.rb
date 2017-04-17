@@ -26,15 +26,7 @@ class Game
   end
 
   def inspect
-    <<~EOF
-      {
-        p1_score: #{p1_score}
-        p2_score: #{p2_score}
-        set: #{set}
-        p1_set_score: #{p1_set_score}
-        p2_set_score: #{p2_set_score}
-      }
-    EOF
+    {p1_score: p1_score, p2_score: p2_score, set: set, p1_set_score: p1_set_score, p2_set_score: p2_set_score}.inspect
   end
 
   def set_score
