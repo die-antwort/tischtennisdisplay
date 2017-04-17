@@ -1,6 +1,6 @@
 require "pi_piper"
 include PiPiper
-class RemoteToButtonConnection
+class ButtonsArmer
   DOUBLE_CLICK_DELAY = 0.2
   DEBOUNCE_DELAY = 0.1
   def self.connect(button_pin_nr, remote_controller)

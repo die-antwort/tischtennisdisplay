@@ -37,7 +37,8 @@ def update_score_board(score)
   @score_board.display(score.for_side(:left), score.for_side(:right), **options)
 end
 
-@input = ConsoleInput
+@input = ConsoleInput.new
+# @input = ButtonInput.new
 
 @score_board = ConsoleScoreBoard.new
 @score_board.display("3", "5", blink: :both)
