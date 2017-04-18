@@ -1,31 +1,28 @@
 require "pi_piper"
-require "concurrent/atomic/semaphore"
+require "concurrent-edge"
 
 class ButtonInput
   DOUBLE_CLICK_DELAY = 0.2
   DEBOUNCE_DELAY = 0.1
 
   def initialize(left_button_pin, right_button_pin)
-    @inputs = []
-    @semaphore = Concurrent::Semaphore.new(0)
+    @inputs = Concurrent::Channel.new(capacity: 1000)
     connect(left_button_pin, ->(action) { handle_symbol(action, 'l') })
     connect(right_button_pin, ->(action) { handle_symbol(action, 'r') })
   end
 
   def get_next
-    @semaphore.acquire if @inputs.empty?
-    @inputs.shift
+    @inputs.take
   end
 
   private
 
   def handle_symbol(action, side)
     if action == :click
-      @inputs.push(side)
+      @inputs.put(side)
     else
-      @inputs.push('u')
+      @inputs.put('u')
     end
-    @semaphore.release
   end
 
   def connect(button_pin_nr, handler)
