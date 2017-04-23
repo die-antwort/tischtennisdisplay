@@ -2,14 +2,14 @@ require "spec_helper"
 require_relative "../../main"
 
 RSpec.describe Main do
-  class TestInput
+  class TestInput < ConsoleInput
     def initialize
       @inputs = []
     end
 
     def get_next
       Fiber.yield while @inputs.empty?
-      @inputs.shift
+      input_event_from_char(@inputs.shift)
     end
 
     def enter(inputs)

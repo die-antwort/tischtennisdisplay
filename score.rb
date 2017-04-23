@@ -64,10 +64,9 @@ class Score
   end
 
   def handle_input(c)
-    case c
-    when 'l', 'r'
-      side = c == 'l' ? :left : :right
-      if @player_on[side] == 1
+    case c.type
+    when :normal
+      if @player_on[c.side] == 1
         @p1_score += 1
       else
         @p2_score += 1

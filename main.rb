@@ -24,7 +24,7 @@ class Main
 
   def run
     @score_board.display(3, 5, blink: :both)
-    max_set_count = @input.get_next == 'l' ? 3 : 5
+    max_set_count = @input.get_next.left? ? 3 : 5
     puts "Starting a best of #{max_set_count} game."
     @game = Game.new(max_set_count: max_set_count)
 
@@ -32,7 +32,7 @@ class Main
       update_score_board(@game.score)
       c = @input.get_next
       break if @game.game_finished?
-      if c == 'u'
+      if c.undo?
         @game.undo
       else
         @game.handle_input(c)
