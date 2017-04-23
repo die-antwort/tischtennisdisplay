@@ -13,7 +13,7 @@ class ButtonInput
     connect(right_button_pin){ |action| handle_symbol(action, 'r') }
   end
 
-  def get_next
+  def get
     @inputs.take
   end
 

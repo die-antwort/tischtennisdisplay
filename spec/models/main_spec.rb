@@ -7,7 +7,7 @@ RSpec.describe Main do
       @inputs = []
     end
 
-    def get_next
+    def get
       Fiber.yield while @inputs.empty?
       input_event_from_char(@inputs.shift)
     end

@@ -1,9 +1,9 @@
 require_relative 'input_event'
 
 class ConsoleInput
-  def get_next
+  def get
     char = $stdin.getc
-    char == "\n" ? get_next : input_event_from_char(char)
+    char == "\n" ? get : input_event_from_char(char)
   end
 
   private
