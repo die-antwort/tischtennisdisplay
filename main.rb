@@ -58,9 +58,6 @@ end
 
 main = if ARGV.shift == "pi"
   require_relative "button_input"
-  PINS.values.each do |pin|
-    system "echo #{pin} > /sys/class/gpio/unexport 2>/dev/null";
-  end
   Main.new(ButtonInput.new(PINS[:left_button_pin], PINS[:right_button_pin]), ConsoleScoreBoard.new)
 else
   Main.new(ConsoleInput.new, ConsoleScoreBoard.new)

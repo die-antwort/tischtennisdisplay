@@ -6,6 +6,8 @@ class ButtonInput
   DEBOUNCE_DELAY = 0.1
 
   def initialize(left_button_pin, right_button_pin)
+    system "echo #{left_button_pin} > /sys/class/gpio/unexport 2>/dev/null";
+    system "echo #{right_button_pin} > /sys/class/gpio/unexport 2>/dev/null";
     @inputs = Concurrent::Channel.new(capacity: 1000)
     connect(left_button_pin){ |action| handle_symbol(action, 'l') }
     connect(right_button_pin){ |action| handle_symbol(action, 'r') }
