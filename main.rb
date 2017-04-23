@@ -14,6 +14,8 @@ class Main
   P1_SHIFT_REGISTER = '/dev/spidev0.0'.freeze
   P2_SHIFT_REGISTER = '/dev/spidev0.1'.freeze
 
+  attr_reader :score_board, :game
+
   def initialize(input, score_board)
     @input = input
     @score_board = score_board
@@ -21,20 +23,20 @@ class Main
   end
 
   def run
-    @score_board.display("3", "5", blink: :both)
+    @score_board.display(3, 5, blink: :both)
     max_set_count = @input.get_next == 'l' ? 3 : 5
     puts "Starting a best of #{max_set_count} game."
-    game = Game.new(max_set_count: max_set_count)
+    @game = Game.new(max_set_count: max_set_count)
 
     loop do
+      update_score_board(@game.score)
       c = @input.get_next
+      break if @game.game_finished?
       if c == 'u'
-        game.undo
+        @game.undo
       else
-        game.handle_input(c)
+        @game.handle_input(c)
       end
-      update_score_board(game.score)
-      break if game.game_finished?
     end
   end
 
