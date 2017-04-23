@@ -1,5 +1,6 @@
 require_relative "../../input_event"
 
+# rubocop:disable SingleLineMethods,MethodName
 module InputEventHelpers
   def l; InputEvent.new(:left); end
   def r; InputEvent.new(:right); end

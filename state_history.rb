@@ -1,16 +1,16 @@
 class StateHistory
   def initialize(command_history, state_keeper)
-    command_history.on_push{ pushState }
-    command_history.on_undo{ popState }
+    command_history.on_push{ push_state }
+    command_history.on_undo{ pop_state }
     @state_keeper = state_keeper
     @history = []
   end
 
-  def pushState
+  def push_state
     @history.push(@state_keeper.state)
   end
 
-  def popState
+  def pop_state
     @history.pop
   end
 
