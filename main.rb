@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 require "bundler"
-require_relative "button_input"
 require_relative "console_input"
 require_relative "console_score_board"
 require_relative "game"
@@ -33,6 +32,7 @@ end
 Thread.abort_on_exception = true
 
 if ARGV.shift == "pi"
+  require_relative "button_input"
   PINS.values.each do |pin|
     system "echo #{pin} > /sys/class/gpio/unexport 2>/dev/null";
   end
