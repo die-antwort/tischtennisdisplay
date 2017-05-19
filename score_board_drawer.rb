@@ -1,6 +1,5 @@
-require "pi_piper"
-include PiPiper
-require "./integer_to_score_board_converter"
+require_relative "./integer_to_score_board_converter"
+require_relative "./untroubled_pi_piper"
 
 class ScoreBoardDrawer
   BLINKING_DELAY = 0.5
@@ -38,8 +37,7 @@ class ScoreBoardDrawer
   end
 
   def init_clock_pin(clock_pin)
-    system "echo #{clock_pin} > /sys/class/gpio/unexport 2>/dev/null"
-    @clock_pin = PiPiper::Pin.new(pin: clock_pin, direction: :out)
+    @clock_pin = UntroubledPiPiper::Pin.new(pin: clock_pin, direction: :out)
     @clock_pin.on
   end
 
