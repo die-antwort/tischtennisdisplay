@@ -61,7 +61,10 @@ if $0 == __FILE__
   main =
     if ARGV.shift == "pi"
       require_relative "button_input"
-      Main.new(ButtonInput.new(PINS[:left_button_pin], PINS[:right_button_pin]), ConsoleScoreBoard.new)
+      Main.new(
+        ButtonInput.new(PINS[:left_button_pin], PINS[:right_button_pin]),
+        ScoreBoardDrawer.new(P1_SHIFT_REGISTER, P2_SHIFT_REGISTER, PINS[:clock_pin])
+      )
     else
       Main.new(ConsoleInput.new, ConsoleScoreBoard.new)
     end
