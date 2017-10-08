@@ -7,8 +7,8 @@ class ButtonInput
 
   def initialize(left_button_pin, right_button_pin)
     @inputs = Concurrent::Channel.new(capacity: 1000)
-    connect(left_button_pin){ |action| handle_symbol(action, 'l') }
-    connect(right_button_pin){ |action| handle_symbol(action, 'r') }
+    connect(left_button_pin){ |action| add_input_event(action, :left) }
+    connect(right_button_pin){ |action| add_input_event(action, :right) }
   end
 
   def get
@@ -17,11 +17,11 @@ class ButtonInput
 
   private
 
-  def handle_symbol(action, side)
+  def add_input_event(action, side)
     if action == :click
-      @inputs.put(side)
+      @inputs.put(InputEvent.new(side))
     else
-      @inputs.put('u')
+      @inputs.put(InputEvent.new(side, :undo))
     end
   end
 
