@@ -3,17 +3,18 @@ require "bundler"
 require_relative "console_input"
 require_relative "console_score_board"
 require_relative "game"
+require_relative "score_board_drawer"
+
+PINS = {
+  left_button_pin: 3,
+  right_button_pin: 2,
+  clock_pin: 17,
+}.freeze
+
+P1_SHIFT_REGISTER = '/dev/spidev0.0'.freeze
+P2_SHIFT_REGISTER = '/dev/spidev0.1'.freeze
 
 class Main
-  PINS = {
-    left_button_pin: 3,
-    right_button_pin: 2,
-    clock_pin: 17,
-  }.freeze
-
-  P1_SHIFT_REGISTER = '/dev/spidev0.0'.freeze
-  P2_SHIFT_REGISTER = '/dev/spidev0.1'.freeze
-
   attr_reader :score_board, :game
 
   def initialize(input, score_board)

@@ -1,6 +1,8 @@
 require "pi_piper"
 
-class UntroubledPiPiper < PiPiper
+module UntroubledPiPiper 
+  extend PiPiper
+
   def self.after(options)
     reset_pin options[:pin]
     super
@@ -12,7 +14,7 @@ class UntroubledPiPiper < PiPiper
 
   class Pin < PiPiper::Pin
     def initialize(options)
-      self.class.reset_pin options[:pin]
+      UntroubledPiPiper.reset_pin options[:pin]
       super
     end
   end
