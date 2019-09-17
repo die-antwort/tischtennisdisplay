@@ -2,7 +2,7 @@ require "concurrent-edge"
 require_relative "./untroubled_pi_piper"
 
 class ButtonInput
-  DOUBLE_CLICK_DELAY = 0.2
+  LONG_PRESS_DURATION = 1
   DEBOUNCE_DELAY = 0.1
 
   def initialize(left_button_pin, right_button_pin)
@@ -26,18 +26,16 @@ class ButtonInput
   end
 
   def connect(button_pin_nr)
-    t = nil
-    UntroubledPiPiper.after pin: button_pin_nr, goes: :down, pull: :up do
-      sleep(DEBOUNCE_DELAY) # debounce button (min click time-'distance')
-      if t.nil? || !t.alive?
-        t = Thread.new{
-          sleep DOUBLE_CLICK_DELAY
-          yield :click
-        }
-      else
-        t.kill
-        yield :double_click
+    pin = UntroubledPiPiper::Pin.new(pin: button_pin_nr, direction: :in, pull: :up)
+    UntroubledPiPiper.after pin: button_pin_nr, goes: :down do
+      start_time = Time.now
+      event = loop do
+        break :long_press if Time.now - start_time >= LONG_PRESS_DURATION
+        if pin.read == 1 # button has been released
+          break :click
+        end
       end
+      yield event
     end
   end
 end
