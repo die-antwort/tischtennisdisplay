@@ -1,9 +1,6 @@
 #!/usr/bin/env ruby
 require "bundler"
-require_relative "console_input"
-require_relative "console_score_board"
 require_relative "game"
-require_relative "score_board"
 
 PINS = {
   left_button_pin: 3,
@@ -67,11 +64,14 @@ if $0 == __FILE__
   main =
     if ARGV.shift == "pi"
       require_relative "button_input"
+      require_relative "score_board"
       Main.new(
         ButtonInput.new(PINS[:left_button_pin], PINS[:right_button_pin]),
         ScoreBoard.new(P1_SHIFT_REGISTER, P2_SHIFT_REGISTER, PINS[:clock_pin])
       )
     else
+      require_relative "console_input"
+      require_relative "console_score_board"
       Main.new(ConsoleInput.new, ConsoleScoreBoard.new)
     end
 
