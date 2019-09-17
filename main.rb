@@ -24,8 +24,7 @@ class Main
   end
 
   def run
-    @score_board.display(3, 5, blink: :both)
-    max_set_count = @input.get.left? ? 3 : 5
+    max_set_count = ask_for_max_set_count
     puts "Starting a best of #{max_set_count} game."
     @game = Game.new(max_set_count: max_set_count)
 
@@ -43,14 +42,20 @@ class Main
 
   private
 
+  def ask_for_max_set_count
+    @score_board.display(3, 5, effect: :blink_alternating)
+    @input.get.left? ? 3 : 5
+  end
+
+
   def update_score_board(score)
     options =
       if score.game_finished?
-        {blink: score.winner_side}
+        {effect: score.winner_side == :left ? :blink_left : :blink_right}
       elsif score.set_finished?
-        {blink: :both}
+        {effect: :blink}
       elsif score.waiting_for_final_set_change_over?
-        {blink: :both}
+        {effect: :blink}
       else
         {}
       end
