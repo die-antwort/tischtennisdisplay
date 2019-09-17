@@ -52,7 +52,7 @@ class Main
       elsif score.set_finished?
         {effect: :rotate_cw, side: score.set_winner_side}
       elsif score.waiting_for_final_set_change_over?
-        {effect: :blink}
+        {effect: :rotate_bounce}
       else
         {}
       end

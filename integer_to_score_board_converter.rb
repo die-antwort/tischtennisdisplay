@@ -53,4 +53,12 @@ class IntegerToScoreBoardBitConverter
   def self.rotation_sequence_ccw
     rotation_sequence_cw.reverse
   end
+
+  def self.rotation_sequence_bounce
+    bit_sequence = rotation_sequence_cw * 4
+    bit_sequence.pop
+    bit_sequence += rotation_sequence_ccw * 4
+    bit_sequence.pop
+    bit_sequence
+  end
 end

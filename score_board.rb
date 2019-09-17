@@ -37,8 +37,12 @@ class ScoreBoard
         when :rotate_ccw
           bit_sequence = IntegerToScoreBoardBitConverter.rotation_sequence_ccw.cycle
           @effect = :rotate_continue
+        when :rotate_bounce
+          bit_sequence = IntegerToScoreBoardBitConverter.rotation_sequence_bounce.cycle
+          @effect = :rotate_continue
         when :rotate_continue
-          update(@side == :left ? bit_sequence.next : @left_bits, @side == :right ? bit_sequence.next : @right_bits)
+          rotation_bits = bit_sequence.next
+          update(@side != :right ? rotation_bits : @left_bits, @side != :left ? rotation_bits : @right_bits)
           sleep(ROTATE_DELAY)
         else
           update(@left_bits, @right_bits)
