@@ -1,4 +1,18 @@
 class IntegerToScoreBoardBitConverter
+  # The bits map to the segments as follows (0 = LSB, 7 = MSB)
+  #
+  #                1
+  #              * * *
+  #     *      *       *
+  #   0 *    6 *       * 2
+  #     *      *   7   *
+  #              * * *
+  #     *      *       *
+  #   0 *    5 *       * 3
+  #     *      *       *
+  #              * * *
+  #                4
+
   def self.convert(int)
     bits = convert_digit(int % 10)
     if int / 10 > 0
@@ -30,5 +44,13 @@ class IntegerToScoreBoardBitConverter
     when 9
       0x6f << 1
     end
+  end
+
+  def self.rotation_sequence_cw
+    [0b0000_0010, 0b0000_0100, 0b0000_1000, 0b0001_0000, 0b0010_0000, 0b0100_0000]
+  end
+
+  def self.rotation_sequence_ccw
+    rotation_sequence_cw.reverse
   end
 end

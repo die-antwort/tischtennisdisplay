@@ -3,6 +3,7 @@ require_relative "./untroubled_pi_piper"
 
 class ScoreBoard
   BLINK_DELAY = 0.500
+  ROTATE_DELAY = 0.100
 
   def initialize(p1_shift_register, p2_shift_register, clock_pin)
     @p1_shift_register = p1_shift_register
@@ -17,6 +18,7 @@ class ScoreBoard
 
   def start_thread
     Thread.new{
+      bit_sequence = nil
       loop do
         case @effect
         when :blink
@@ -29,6 +31,15 @@ class ScoreBoard
           sleep(BLINK_DELAY)
           update(nil, @right_bits)
           sleep(BLINK_DELAY)
+        when :rotate_cw
+          bit_sequence = IntegerToScoreBoardBitConverter.rotation_sequence_cw.cycle
+          @effect = :rotate_continue
+        when :rotate_ccw
+          bit_sequence = IntegerToScoreBoardBitConverter.rotation_sequence_ccw.cycle
+          @effect = :rotate_continue
+        when :rotate_continue
+          update(@side == :left ? bit_sequence.next : @left_bits, @side == :right ? bit_sequence.next : @right_bits)
+          sleep(ROTATE_DELAY)
         else
           update(@left_bits, @right_bits)
         end
