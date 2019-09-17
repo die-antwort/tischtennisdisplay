@@ -26,7 +26,7 @@ class Main
     @game = Game.new(max_set_count: max_set_count)
 
     loop do
-      update_score_board(@game.score)
+      update_score_board(@game)
       c = @input.get
       break if @game.game_finished?
       if c.undo?
@@ -45,19 +45,19 @@ class Main
   end
 
 
-  def update_score_board(score)
+  def update_score_board(game)
     options =
-      if score.game_finished?
-        {effect: :rotate_ccw, side: score.winner_side}
-      elsif score.set_finished?
-        {effect: :rotate_cw, side: score.set_winner_side}
-      elsif score.waiting_for_final_set_change_over?
+      if game.game_finished?
+        {effect: :rotate_ccw, side: game.winner_side}
+      elsif game.set_finished?
+        {effect: :rotate_cw, side: game.set_winner_side}
+      elsif game.waiting_for_final_set_change_over?
         {effect: :rotate_bounce}
       else
         {}
       end
-    left = score.for_side(:left) unless score.game_finished? && score.winner_side == :right
-    right = score.for_side(:right) unless score.game_finished? && score.winner_side == :left
+    left = game.score_for_side(:left) unless game.game_finished? && game.winner_side == :right
+    right = game.score_for_side(:right) unless game.game_finished? && game.winner_side == :left
     @score_board.display(left, right, **options)
   end
 end

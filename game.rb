@@ -1,11 +1,11 @@
 require_relative "score"
 
 class Game
-  attr_reader :score, :max_set_count
+  attr_reader :max_set_count
 
-  %i(p1_score p2_score p1_set_score p2_set_score set winner game_finished?).each do |method|
+  %i(p1_score p2_score p1_set_score p2_set_score set set_finished? set_winner_side winner winner_side game_finished? waiting_for_final_set_change_over?).each do |method|
     define_method method do
-      score.public_send(method)
+      @score.public_send(method)
     end
   end
 
@@ -31,5 +31,9 @@ class Game
 
   def set_score
     @score = Score.new(@history, max_set_count: max_set_count)
+  end
+
+  def score_for_side(side)
+    @score.for_side(side)
   end
 end
