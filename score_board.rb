@@ -10,6 +10,7 @@ class ScoreBoard
     @left_bits = 0
     @right_bits = 0
     @effect = nil
+    @side = nil
     init_clock_pin(clock_pin)
     @t = start_thread
   end
@@ -21,22 +22,12 @@ class ScoreBoard
         when :blink
           update(@left_bits, @right_bits)
           sleep(BLINK_DELAY)
-          update(nil, nil)
+          update((@left_bits if @side == :right), (@right_bits if @side == :left))
           sleep(BLINK_DELAY)
         when :blink_alternating
           update(@left_bits, nil)
           sleep(BLINK_DELAY)
           update(nil, @right_bits)
-          sleep(BLINK_DELAY)
-        when :blink_left
-          update(@left_bits, @right_bits)
-          sleep(BLINK_DELAY)
-          update(nil, @right_bits)
-          sleep(BLINK_DELAY)
-        when :blink_right
-          update(@left_bits, @right_bits)
-          sleep(BLINK_DELAY)
-          update(@left_bits, nil)
           sleep(BLINK_DELAY)
         else
           update(@left_bits, @right_bits)
@@ -47,10 +38,11 @@ class ScoreBoard
 
   #just updating state here
   #thread @t redraws it
-  def display(left_score, right_score, effect: nil)
+  def display(left_score, right_score, effect: nil, side: nil)
     @left_bits = IntegerToScoreBoardBitConverter.convert(left_score)
     @right_bits = IntegerToScoreBoardBitConverter.convert(right_score)
     @effect = effect
+    @side = side
   end
 
   def init_clock_pin(clock_pin)

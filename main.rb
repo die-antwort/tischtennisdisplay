@@ -51,7 +51,7 @@ class Main
   def update_score_board(score)
     options =
       if score.game_finished?
-        {effect: score.winner_side == :left ? :blink_left : :blink_right}
+        {effect: :blink, side: score.winner_side}
       elsif score.set_finished?
         {effect: :blink}
       elsif score.waiting_for_final_set_change_over?
