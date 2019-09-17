@@ -48,7 +48,7 @@ class Main
   def update_score_board(score)
     options =
       if score.game_finished?
-        {effect: :blink, side: score.winner_side}
+        {effect: :rotate_ccw, side: score.winner_side}
       elsif score.set_finished?
         {effect: :rotate_cw, side: score.set_winner_side}
       elsif score.waiting_for_final_set_change_over?
@@ -56,7 +56,9 @@ class Main
       else
         {}
       end
-    @score_board.display(score.for_side(:left), score.for_side(:right), **options)
+    left = score.for_side(:left) unless score.game_finished? && score.winner_side == :right
+    right = score.for_side(:right) unless score.game_finished? && score.winner_side == :left
+    @score_board.display(left, right, **options)
   end
 end
 
