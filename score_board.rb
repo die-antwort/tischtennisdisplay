@@ -50,8 +50,8 @@ class ScoreBoard
   #just updating state here
   #thread @t redraws it
   def display(left_score, right_score, effect: nil, side: nil)
-    @left_bits = IntegerToScoreBoardBitConverter.convert(left_score)
-    @right_bits = IntegerToScoreBoardBitConverter.convert(right_score)
+    @left_bits = left_score ? IntegerToScoreBoardBitConverter.convert(left_score) : nil
+    @right_bits = right_score ? IntegerToScoreBoardBitConverter.convert(right_score) : nil
     @effect = effect
     @side = side
   end
