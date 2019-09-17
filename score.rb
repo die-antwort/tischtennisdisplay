@@ -42,6 +42,15 @@ class Score
     @player_on.invert[winner]
   end
 
+  def set_winner
+    return unless set_finished?
+    @p1_score > @p2_score ? 1 : 2
+  end
+
+  def set_winner_side
+    @player_on.invert[set_winner]
+  end
+
   def for_side(side)
     if @player_on[side] == 1
       @p1_score
