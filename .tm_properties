@@ -1,0 +1,15 @@
+# Excludes
+#excludeInFileChooser = "{$exclude,tmp/}"
+#excludeInFolderSearch = "{$excludeInFolderSearch,db/*.csv}"
+
+# Enable to keep whitespaces and/or missing trailing newlines
+scopeAttributes = 'attr.no-rubocop'
+
+# For Rails projects
+#[ *.rb~*_spec.rb ]
+#fileType = source.ruby.rails
+
+# File-type specific tab settings
+#[ *.tsv ]
+#tabSize = 8
+#softTabs = false
