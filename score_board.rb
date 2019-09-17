@@ -1,7 +1,7 @@
 require_relative "./integer_to_score_board_converter"
 require_relative "./untroubled_pi_piper"
 
-class ScoreBoardDrawer
+class ScoreBoard
   BLINKING_DELAY = 0.5
   def initialize(p1_shift_register, p2_shift_register, clock_pin)
     @p1_shift_register = p1_shift_register
@@ -29,7 +29,7 @@ class ScoreBoardDrawer
   end
 
   #just updating state here
-  #thread @t redraws it 
+  #thread @t redraws it
   def display(left_score, right_score, blink: false)
     @left_bits = IntegerToScoreBoardBitConverter.convert(left_score)
     @right_bits = IntegerToScoreBoardBitConverter.convert(right_score)
