@@ -1,4 +1,4 @@
-class Score
+class GameState
   attr_reader :p1_score, :p2_score, :p1_set_score, :p2_set_score, :set, :winning_set_score
 
   WINNING_SCORE = 11
