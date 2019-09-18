@@ -50,7 +50,7 @@ class GameState
     @player_on.invert[set_winner]
   end
 
-  def for_side(side)
+  def score_for_side(side)
     if @player_on[side] == 1
       p1_score
     else

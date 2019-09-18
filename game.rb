@@ -34,6 +34,6 @@ class Game
   end
 
   def score_for_side(side)
-    @game_state.for_side(side)
+    @game_state.score_for_side(side)
   end
 end
