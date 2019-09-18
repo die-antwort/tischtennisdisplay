@@ -43,7 +43,7 @@ class GameState
 
   def set_winner
     return unless set_finished?
-    p1_score > p2_score ? 1 : 2
+    current_set.p1_won? ? 1 : 2
   end
 
   def set_winner_side
@@ -95,8 +95,8 @@ class GameState
       $stderr.puts "Unknown command '#{c}'"
     end
     if set_finished?
-      @p1_set_score += p1_score > p2_score ? 1 : 0
-      @p2_set_score += p2_score > p1_score ? 1 : 0
+      @p1_set_score += current_set.p1_won? ? 1 : 0
+      @p2_set_score += current_set.p2_won? ? 1 : 0
     end
   end
 
