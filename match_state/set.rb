@@ -1,4 +1,4 @@
-class GameState
+class MatchState
   class Set
     MIN_DIFFERENCE = 2
 

@@ -1,6 +1,6 @@
-require_relative "game_state/set"
+require_relative "match_state/set"
 
-class GameState
+class MatchState
   attr_reader :sets, :winning_set_score
 
   WINNING_SCORE = 11
