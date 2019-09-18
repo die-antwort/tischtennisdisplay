@@ -12,7 +12,7 @@ class MatchState
     end
 
     def waiting_for_final_set_switching_of_sides?
-      @is_final_set && !@final_set_sides_switched && p1_score + p2_score == 7
+      @is_final_set && !@final_set_sides_switched && [p1_score, p2_score].max == 5
     end
 
     def finished?

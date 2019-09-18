@@ -35,18 +35,18 @@ RSpec.describe MatchState do
       [l] * 12 +   # Game 2: p2 vs. p1, left side = p2 wins
       [l] * 12 +   # Game 3: p1 vs. p2, left side = p1 wins
       [l] * 12 +   # Game 4: p2 vs. p1, left side = p2 wins
-      [l] * 6      # Game 5: p1 vs. p2, current score 6:0
+      [l] * 4      # Game 5: p1 vs. p2, current score 4:0
     match_state = match_state(input, max_set_count: 5)
     expect(match_state.current_set_nr).to eq(5)
     expect(match_state.p1_set_score).to eq(2)
     expect(match_state.p2_set_score).to eq(2)
-    expect(match_state.score_for_side(:left)).to eq(6)
+    expect(match_state.score_for_side(:left)).to eq(4)
     expect(match_state.score_for_side(:right)).to eq(0)
     expect(match_state.waiting_for_final_set_switching_of_sides?).to eq(false)
 
     input << l # 7:0, now waiting to switch sides
     match_state = match_state(input, max_set_count: 5)
-    expect(match_state.score_for_side(:left)).to eq(7)
+    expect(match_state.score_for_side(:left)).to eq(5)
     expect(match_state.score_for_side(:right)).to eq(0)
     expect(match_state.waiting_for_final_set_switching_of_sides?).to eq(true)
 
@@ -54,7 +54,7 @@ RSpec.describe MatchState do
     match_state = match_state(input, max_set_count: 5)
     expect(match_state.waiting_for_final_set_switching_of_sides?).to eq(false)
     expect(match_state.score_for_side(:left)).to eq(1)
-    expect(match_state.score_for_side(:right)).to eq(7)
+    expect(match_state.score_for_side(:right)).to eq(5)
   end
 
   it "knows who won and on which side (left) they are" do
