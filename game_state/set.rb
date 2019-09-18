@@ -34,6 +34,10 @@ class GameState
       @p2_score += 1
     end
 
+    def inspect
+      {p1_score: p1_score, p2_score: p2_score}.inspect
+    end
+
     def ==(other)
       return false unless other.class == self.class
       other.p1_score == p1_score && other.p2_score == p2_score

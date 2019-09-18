@@ -52,9 +52,9 @@ class GameState
 
   def score_for_side(side)
     if @player_on[side] == 1
-      p1_score
+      current_set.p1_score
     else
-      p2_score
+      current_set.p2_score
     end
   end
 
@@ -64,14 +64,6 @@ class GameState
 
   def set_finished?
     current_set.finished?
-  end
-
-  def p1_score
-    current_set.p1_score
-  end
-
-  def p2_score
-    current_set.p2_score
   end
 
   def game_finished?
@@ -116,7 +108,7 @@ class GameState
   end
 
   def inspect
-    {p1_score: p1_score, p2_score: p2_score, set: sets.size, p1_set_score: p1_set_score, p2_set_score: p2_set_score}.inspect
+    {sets: sets.inspect, p1_set_score: p1_set_score, p2_set_score: p2_set_score}.inspect
   end
 
   def ==(other)
