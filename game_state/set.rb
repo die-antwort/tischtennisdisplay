@@ -19,11 +19,11 @@ class GameState
     end
 
     def p1_won?
-      p1_score > p2_score
+      finished? && p1_score > p2_score
     end
 
     def p2_won?
-      p2_score > p1_score
+      finished? && p2_score > p1_score
     end
 
     def p1_scored

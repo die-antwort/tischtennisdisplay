@@ -1,15 +1,13 @@
 require_relative "game_state/set"
 
 class GameState
-  attr_reader :p1_set_score, :p2_set_score, :sets, :winning_set_score
+  attr_reader :sets, :winning_set_score
 
   WINNING_SCORE = 11
 
   MIN_SET_DIFFERENCE = 1
 
   def initialize(input, max_set_count: 3)
-    @p1_set_score = 0
-    @p2_set_score = 0
     @sets = [Set.new]
     @winning_set_score = winning_set_score_for_max_set_count(max_set_count)
     @changed_over_in_final_set = false
@@ -58,6 +56,14 @@ class GameState
     end
   end
 
+  def p1_set_score
+    sets.select(&:p1_won?).size
+  end
+
+  def p2_set_score
+    sets.select(&:p2_won?).size
+  end
+
   def current_set
     sets.last
   end
@@ -85,10 +91,6 @@ class GameState
       end
     else
       $stderr.puts "Unknown command '#{c}'"
-    end
-    if set_finished?
-      @p1_set_score += current_set.p1_won? ? 1 : 0
-      @p2_set_score += current_set.p2_won? ? 1 : 0
     end
   end
 
