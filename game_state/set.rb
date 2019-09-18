@@ -33,5 +33,10 @@ class GameState
     def p2_scored
       @p2_score += 1
     end
+
+    def ==(other)
+      return false unless other.class == self.class
+      other.p1_score == p1_score && other.p2_score == p2_score
+    end
   end
 end

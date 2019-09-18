@@ -121,9 +121,7 @@ class GameState
 
   def ==(other)
     return false unless other.class == self.class
-    other.p1_score == p1_score &&
-      other.p2_score == p2_score &&
-      other.sets.size == sets.size &&
+    other.sets == sets &&
       other.p1_set_score == p1_set_score &&
       other.p2_set_score == p2_set_score
   end
