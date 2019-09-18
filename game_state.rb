@@ -17,7 +17,7 @@ class GameState
   end
 
   def update_state(c)
-    return if game_finished?
+    return if match_finished?
     if set_finished?
       change_over
       start_new_set
@@ -30,7 +30,7 @@ class GameState
   end
 
   def winner
-    return unless game_finished?
+    return unless match_finished?
     p1_set_score > p2_set_score ? 1 : 2
   end
 
@@ -75,7 +75,7 @@ class GameState
     current_set.finished?
   end
 
-  def game_finished?
+  def match_finished?
     (p1_set_score - p2_set_score).abs >= MIN_SET_DIFFERENCE && [p1_set_score, p2_set_score].max >= winning_set_score
   end
 

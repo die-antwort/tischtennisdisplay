@@ -1,9 +1,9 @@
 require_relative "game_state"
 
-class Game
+class Match
   attr_reader :max_set_count
 
-  %i(current_set_nr p1_set_score p2_set_score set_finished? set_winner_side winner_side game_finished? waiting_for_final_set_change_over? inspect).each do |method|
+  %i(current_set_nr p1_set_score p2_set_score set_finished? set_winner_side winner_side match_finished? waiting_for_final_set_change_over? inspect).each do |method|
     define_method method do
       @game_state.public_send(method)
     end

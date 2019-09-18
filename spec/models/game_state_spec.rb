@@ -105,10 +105,10 @@ RSpec.describe GameState do
     expect(game_state.current_set_nr).to eq(2)
   end
 
-  it 'respects max_set_count when checking if the game is finished' do
+  it 'respects max_set_count when checking if the match is finished' do
     winning_sequence_for_best_of_3_match = [l] * 12 + [r] * 11
-    expect(game_state(winning_sequence_for_best_of_3_match, max_set_count: 3).game_finished?).to be true
-    expect(game_state(winning_sequence_for_best_of_3_match, max_set_count: 5).game_finished?).to be false
+    expect(game_state(winning_sequence_for_best_of_3_match, max_set_count: 3).match_finished?).to be true
+    expect(game_state(winning_sequence_for_best_of_3_match, max_set_count: 5).match_finished?).to be false
   end
 
 
@@ -116,21 +116,21 @@ RSpec.describe GameState do
   #  #input = { 1 } * (3*11-1)
   # end
 
-  it "knows when game is finished and ignores input after that" do
+  it "knows when match is finished and ignores input after that" do
     input =
       [l] * 12 +   # Set 1: p1 vs. p2, left side = p1 wins
       [r] * 12 +   # Set 2: p2 vs. p1, right side = p1 wins
       [l] * 10     # Set 3: p1 vs. p2, current score 10:0
     game_state = game_state(input, max_set_count: 5)
-    expect(game_state.game_finished?).to eq(false)
+    expect(game_state.match_finished?).to eq(false)
 
-    input << l # score now 11:0, p1 wins their third set and thus the game
+    input << l # score now 11:0, p1 wins their third set and thus the match
     game_state = game_state(input, max_set_count: 5)
-    expect(game_state.game_finished?).to eq(true)
+    expect(game_state.match_finished?).to eq(true)
     expect(game_state.current_set_nr).to eq(3)
     expect(game_state.score_for_side(:left)).to eq(11)
 
-    input << l # game is finished, input should be ignored
+    input << l # match is finished, input should be ignored
     new_game_state = game_state(input, max_set_count: 5)
     expect(new_game_state).to eq(game_state)
   end

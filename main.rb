@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require "bundler"
-require_relative "game"
+require_relative "match"
 
 PINS = {
   left_button_pin: 3,
@@ -12,7 +12,7 @@ P1_SHIFT_REGISTER = '/dev/spidev0.0'.freeze
 P2_SHIFT_REGISTER = '/dev/spidev0.1'.freeze
 
 class Main
-  attr_reader :score_board, :game
+  attr_reader :score_board, :match
 
   def initialize(input, score_board)
     @input = input
@@ -22,17 +22,17 @@ class Main
 
   def run
     max_set_count = ask_for_max_set_count
-    puts "Starting a best of #{max_set_count} game."
-    @game = Game.new(max_set_count: max_set_count)
+    puts "Starting a best of #{max_set_count} match."
+    @match = Match.new(max_set_count: max_set_count)
 
     loop do
-      update_score_board(@game)
+      update_score_board(@match)
       c = @input.get
-      break if @game.game_finished?
+      break if @match.match_finished?
       if c.undo?
-        @game.undo
+        @match.undo
       else
-        @game.handle_input(c)
+        @match.handle_input(c)
       end
     end
   end
@@ -45,19 +45,19 @@ class Main
   end
 
 
-  def update_score_board(game)
+  def update_score_board(match)
     options =
-      if game.game_finished?
-        {effect: :rotate_ccw, side: game.winner_side}
-      elsif game.set_finished?
-        {effect: :rotate_cw, side: game.set_winner_side}
-      elsif game.waiting_for_final_set_change_over?
+      if match.match_finished?
+        {effect: :rotate_ccw, side: match.winner_side}
+      elsif match.set_finished?
+        {effect: :rotate_cw, side: match.set_winner_side}
+      elsif match.waiting_for_final_set_change_over?
         {effect: :rotate_bounce}
       else
         {}
       end
-    left = game.score_for_side(:left) unless game.game_finished? && game.winner_side == :right
-    right = game.score_for_side(:right) unless game.game_finished? && game.winner_side == :left
+    left = match.score_for_side(:left) unless match.match_finished? && match.winner_side == :right
+    right = match.score_for_side(:right) unless match.match_finished? && match.winner_side == :left
     @score_board.display(left, right, **options)
   end
 end
