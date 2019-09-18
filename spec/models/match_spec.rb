@@ -46,7 +46,7 @@ RSpec.describe Match do
     expect(match.p1_set_score).to eq(1)
     expect(match.p2_set_score).to eq(0)
 
-    match.handle_input(l) # acknowledge first set, start second set
+    match.handle_input(l) # acknowledge first game, start second game
     expect(match.score_for_side(:left)).to eq(0)
     expect(match.score_for_side(:right)).to eq(0)
     expect(match.current_set_nr).to eq(2)

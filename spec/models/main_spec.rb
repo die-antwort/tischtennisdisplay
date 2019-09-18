@@ -56,7 +56,7 @@ RSpec.describe Main do
     enter(%w(l) * 11)
     expect(@score_board.state).to eq [[11, :rotate_cw], [0, nil]]
     expect(@main.match.p1_set_score).to eq 1
-    enter('r') # “next set”
+    enter('r') # “next game”
     expect(@score_board.state).to eq [[0, nil], [0, nil]]
     enter(%w(L) * 2) # “undo”
     expect(@score_board.state).to eq [[10, nil], [0, nil]]
@@ -64,7 +64,7 @@ RSpec.describe Main do
     expect(@score_board.state).to eq [[10, nil], [12, :rotate_cw]]
     expect(@main.match.p1_set_score).to eq 0
     expect(@main.match.p2_set_score).to eq 1
-    enter('r') # “next set”
+    enter('r') # “next game”
     expect(@score_board.state).to eq [[0, nil], [0, nil]]
     enter(%w(l) * 11)
     expect(@score_board.state).to eq [[11, :rotate_ccw], [nil, nil]]

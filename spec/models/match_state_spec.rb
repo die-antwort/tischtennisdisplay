@@ -19,8 +19,8 @@ RSpec.describe MatchState do
 
   it "handles changeover" do
     input =
-      [l] * 12 +   # Set 1: p1 vs. p2, left side = p1 wins
-      [l] * 1      # Set 2: p2 vs. p1, current score 1:0
+      [l] * 12 +   # Game 1: p1 vs. p2, left side = p1 wins
+      [l] * 1      # Game 2: p2 vs. p1, current score 1:0
     match_state = match_state(input)
     expect(match_state.score_for_side(:left)).to eq(1)
     expect(match_state.score_for_side(:right)).to eq(0)
@@ -29,13 +29,13 @@ RSpec.describe MatchState do
     expect(match_state.current_set_nr).to eq(2)
   end
 
-  it "handles changeover in last set and knows when it is waiting for changeover" do
+  it "handles changeover in last game and knows when it is waiting for changeover" do
     input =
-      [l] * 12 +   # Set 1: p1 vs. p2, left side = p1 wins
-      [l] * 12 +   # Set 2: p2 vs. p1, left side = p2 wins
-      [l] * 12 +   # Set 3: p1 vs. p2, left side = p1 wins
-      [l] * 12 +   # Set 4: p2 vs. p1, left side = p2 wins
-      [l] * 6      # Set 5: p1 vs. p2, current score 6:0
+      [l] * 12 +   # Game 1: p1 vs. p2, left side = p1 wins
+      [l] * 12 +   # Game 2: p2 vs. p1, left side = p2 wins
+      [l] * 12 +   # Game 3: p1 vs. p2, left side = p1 wins
+      [l] * 12 +   # Game 4: p2 vs. p1, left side = p2 wins
+      [l] * 6      # Game 5: p1 vs. p2, current score 6:0
     match_state = match_state(input, max_set_count: 5)
     expect(match_state.current_set_nr).to eq(5)
     expect(match_state.p1_set_score).to eq(2)
@@ -59,10 +59,10 @@ RSpec.describe MatchState do
 
   it "knows who won and on which side (left) they are" do
     input =
-      [l] * 12 +   # Set 1: p1 vs. p2, left side = p1 wins
-      [l] * 12 +   # Set 2: p2 vs. p1, left side = p2 wins
-      [r] * 12 +   # Set 3: p1 vs. p2, right side = p2 wins
-      [l] * 10     # Set 4: p2 vs. p1, current score 10:0
+      [l] * 12 +   # Game 1: p1 vs. p2, left side = p1 wins
+      [l] * 12 +   # Game 2: p2 vs. p1, left side = p2 wins
+      [r] * 12 +   # Game 3: p1 vs. p2, right side = p2 wins
+      [l] * 10     # Game 4: p2 vs. p1, current score 10:0
     match_state = match_state(input, max_set_count: 5)
     expect(match_state.winner).to be_nil
     expect(match_state.winner_side).to be_nil
@@ -75,10 +75,10 @@ RSpec.describe MatchState do
 
   it "knows who won and on which side (right) they are" do
     input =
-      [l] * 12 +   # Set 1: p1 vs. p2, left side = p1 wins
-      [l] * 12 +   # Set 2: p2 vs. p1, left side = p2 wins
-      [l] * 12 +   # Set 3: p1 vs. p2, left side = p1 wins
-      [r] * 10     # Set 4: p2 vs. p1, current score 0:10
+      [l] * 12 +   # Game 1: p1 vs. p2, left side = p1 wins
+      [l] * 12 +   # Game 2: p2 vs. p1, left side = p2 wins
+      [l] * 12 +   # Game 3: p1 vs. p2, left side = p1 wins
+      [r] * 10     # Game 4: p2 vs. p1, current score 0:10
     match_state = match_state(input, max_set_count: 5)
     expect(match_state.winner).to be_nil
     expect(match_state.winner_side).to be_nil
@@ -89,7 +89,7 @@ RSpec.describe MatchState do
     expect(match_state.winner_side).to eq(:right)
   end
 
-  it "knows when set is finished" do
+  it "knows when game is finished" do
     input = [l] * 10 # current score 10:0
     match_state = match_state(input)
     expect(match_state.set_finished?).to eq(false)
@@ -99,7 +99,7 @@ RSpec.describe MatchState do
     expect(match_state.set_finished?).to eq(true)
     expect(match_state.current_set_nr).to eq(1)
 
-    input << l # acknowledge first set, start second set
+    input << l # acknowledge first game, start second game
     match_state = match_state(input)
     expect(match_state.set_finished?).to eq(false)
     expect(match_state.current_set_nr).to eq(2)
@@ -118,13 +118,13 @@ RSpec.describe MatchState do
 
   it "knows when match is finished and ignores input after that" do
     input =
-      [l] * 12 +   # Set 1: p1 vs. p2, left side = p1 wins
-      [r] * 12 +   # Set 2: p2 vs. p1, right side = p1 wins
-      [l] * 10     # Set 3: p1 vs. p2, current score 10:0
+      [l] * 12 +   # Game 1: p1 vs. p2, left side = p1 wins
+      [r] * 12 +   # Game 2: p2 vs. p1, right side = p1 wins
+      [l] * 10     # Game 3: p1 vs. p2, current score 10:0
     match_state = match_state(input, max_set_count: 5)
     expect(match_state.match_finished?).to eq(false)
 
-    input << l # score now 11:0, p1 wins their third set and thus the match
+    input << l # score now 11:0, p1 wins their third game and thus the match
     match_state = match_state(input, max_set_count: 5)
     expect(match_state.match_finished?).to eq(true)
     expect(match_state.current_set_nr).to eq(3)

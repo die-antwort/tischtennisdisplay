@@ -1,4 +1,4 @@
-require_relative "match_state/set"
+require_relative "match_state/game"
 
 class MatchState
   attr_reader :sets, :winning_set_score
@@ -8,7 +8,7 @@ class MatchState
   MIN_SET_DIFFERENCE = 1
 
   def initialize(input, max_set_count: 3)
-    @sets = [Set.new]
+    @sets = [Game.new]
     @winning_set_score = winning_set_score_for_max_set_count(max_set_count)
     @player_on = {left: 1, right: 2}
     input.each do |c|
@@ -103,7 +103,7 @@ class MatchState
   end
 
   def start_new_set
-    sets << Set.new(is_final_set: sets.size == winning_set_score * 2 - 2)
+    sets << Game.new(is_final_set: sets.size == winning_set_score * 2 - 2)
   end
 
   def winning_set_score_for_max_set_count(max_set_count)

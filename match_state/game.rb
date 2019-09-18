@@ -1,5 +1,5 @@
 class MatchState
-  class Set
+  class Game
     MIN_DIFFERENCE = 2
 
     attr_reader :p1_score, :p2_score
