@@ -1,4 +1,5 @@
 require "spec_helper"
+require_relative "../../console_input"
 require_relative "../../main"
 
 RSpec.describe Main do
@@ -20,10 +21,10 @@ RSpec.describe Main do
   class TestScoreBoard
     attr_reader :state
 
-    def display(left, right, blink: false)
+    def display(left, right, effect: nil, side: nil)
       @state = [
-        [left, blink == :left || blink == :both ? :blink : :normal],
-        [right, blink == :right || blink == :both ? :blink : :normal],
+        [left, (effect unless side == :right)],
+        [right, (effect unless side == :left)],
       ]
     end
   end
@@ -44,29 +45,29 @@ RSpec.describe Main do
   end
 
   it 'asks if the game should be “best of 3” or “best of 5”' do
-    expect(@score_board.state).to eq [[3, :blink], [5, :blink]]
+    expect(@score_board.state).to eq [[3, :blink_alternating], [5, :blink_alternating]]
     enter('l')
     expect(@main.game.max_set_count).to eq 3
-    expect(@score_board.state).to eq [[0, :normal], [0, :normal]]
+    expect(@score_board.state).to eq [[0, nil], [0, nil]]
   end
 
   it 'processes inputs as expected' do
     enter('l') # “best of 3”
     enter(%w(l) * 11)
-    expect(@score_board.state).to eq [[11, :blink], [0, :blink]]
+    expect(@score_board.state).to eq [[11, :rotate_cw], [0, nil]]
     expect(@main.game.p1_set_score).to eq 1
     enter('r') # “next set”
-    expect(@score_board.state).to eq [[0, :normal], [0, :normal]]
-    enter(%w(u) * 2)
-    expect(@score_board.state).to eq [[10, :normal], [0, :normal]]
+    expect(@score_board.state).to eq [[0, nil], [0, nil]]
+    enter(%w(L) * 2) # “undo”
+    expect(@score_board.state).to eq [[10, nil], [0, nil]]
     enter(%w(r) * 12)
-    expect(@score_board.state).to eq [[10, :blink], [12, :blink]]
+    expect(@score_board.state).to eq [[10, nil], [12, :rotate_cw]]
     expect(@main.game.p1_set_score).to eq 0
     expect(@main.game.p2_set_score).to eq 1
     enter('r') # “next set”
-    expect(@score_board.state).to eq [[0, :normal], [0, :normal]]
+    expect(@score_board.state).to eq [[0, nil], [0, nil]]
     enter(%w(l) * 11)
-    expect(@score_board.state).to eq [[11, :blink], [0, :normal]]
+    expect(@score_board.state).to eq [[11, :rotate_ccw], [nil, nil]]
     expect(@main.game.p1_set_score).to eq 0
     expect(@main.game.p2_set_score).to eq 2
     expect(@main.game.game_finished?).to be true

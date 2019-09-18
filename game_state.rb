@@ -67,6 +67,10 @@ class GameState
     sets.last
   end
 
+  def current_set_nr
+    sets.size
+  end
+
   def set_finished?
     current_set.finished?
   end

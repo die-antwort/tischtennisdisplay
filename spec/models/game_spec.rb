@@ -13,35 +13,67 @@ RSpec.describe Game do
     game
   end
 
-  it "can delegate input to score" do
-    score = game_with_input_sequence([l, l, r, r, l, l]).score
-    expect(score.p1_score).to eq(4)
-    expect(score.p2_score).to eq(2)
-    expect(score.set).to eq(1)
+  it "calculates scores" do
+    game = game_with_input_sequence([l, l, r, r, l, l])
+    expect(game.score_for_side(:left)).to eq(4)
+    expect(game.score_for_side(:right)).to eq(2)
+    expect(game.current_set_nr).to eq(1)
   end
 
   it "can undo" do
     game = game_with_input_sequence([l, l, r, r, l])
-    original_score = game.score
-    game.handle_input(r)
-    expect(game.score).to_not eq(original_score)
+    expect(game.score_for_side(:left)).to eq(3)
+    expect(game.score_for_side(:right)).to eq(2)
+
     game.undo
-    expect(game.score).to eq(original_score)
+    expect(game.score_for_side(:left)).to eq(2)
+    expect(game.score_for_side(:right)).to eq(2)
+
+    game.undo
+    expect(game.score_for_side(:left)).to eq(2)
+    expect(game.score_for_side(:right)).to eq(1)
+
+    game.handle_input(l)
+    expect(game.score_for_side(:left)).to eq(3)
+    expect(game.score_for_side(:right)).to eq(1)
   end
 
   it "can undo across sets" do
-    game = game_with_input_sequence([l] * 10)
-    original_score = game.score
-    game.handle_input(l)
-    game.handle_input(l)
-    expect(game.score).to_not eq(original_score)
-    # needs to also undo the confirmation click that is needed to get to the next set
+    game = game_with_input_sequence([l] * 11)
+    expect(game.score_for_side(:left)).to eq(11)
+    expect(game.score_for_side(:right)).to eq(0)
+    expect(game.current_set_nr).to eq(1)
+    expect(game.p1_set_score).to eq(1)
+    expect(game.p2_set_score).to eq(0)
+
+    game.handle_input(l) # acknowledge first set, start second set
+    expect(game.score_for_side(:left)).to eq(0)
+    expect(game.score_for_side(:right)).to eq(0)
+    expect(game.current_set_nr).to eq(2)
+    expect(game.p1_set_score).to eq(1)
+    expect(game.p2_set_score).to eq(0)
+
     game.undo
+    expect(game.score_for_side(:left)).to eq(11)
+    expect(game.score_for_side(:right)).to eq(0)
+    expect(game.current_set_nr).to eq(1)
+    expect(game.p1_set_score).to eq(1)
+    expect(game.p2_set_score).to eq(0)
+
     game.undo
-    expect(game.score).to eq(original_score)
+    expect(game.score_for_side(:left)).to eq(10)
+    expect(game.score_for_side(:right)).to eq(0)
+    expect(game.current_set_nr).to eq(1)
+    expect(game.p1_set_score).to eq(0)
+    expect(game.p2_set_score).to eq(0)
   end
 
   it 'has a valid score even if the input is empty' do
-    expect(Game.new.score).to_not be_nil
+    game = Game.new
+    expect(game.score_for_side(:left)).to eq(0)
+    expect(game.score_for_side(:right)).to eq(0)
+    expect(game.current_set_nr).to eq(1)
+    expect(game.p1_set_score).to eq(0)
+    expect(game.p2_set_score).to eq(0)
   end
 end
