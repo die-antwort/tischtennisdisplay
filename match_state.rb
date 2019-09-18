@@ -19,11 +19,11 @@ class MatchState
   def update_state(c)
     return if match_finished?
     if set_finished?
-      change_over
+      switch_sides
       start_new_set
-    elsif waiting_for_final_set_change_over?
-      change_over
-      current_set.do_final_set_change_over
+    elsif waiting_for_final_set_switching_of_sides?
+      switch_sides
+      current_set.final_set_switch_sides
     else
       handle_input(c)
     end
@@ -79,8 +79,8 @@ class MatchState
     (p1_set_score - p2_set_score).abs >= MIN_SET_DIFFERENCE && [p1_set_score, p2_set_score].max >= winning_set_score
   end
 
-  def waiting_for_final_set_change_over?
-    current_set.need_change_over?
+  def waiting_for_final_set_switching_of_sides?
+    current_set.waiting_for_final_set_switching_of_sides?
   end
 
   def handle_input(c)
@@ -96,7 +96,7 @@ class MatchState
     end
   end
 
-  def change_over
+  def switch_sides
     tmp = @player_on[:left]
     @player_on[:left] = @player_on[:right]
     @player_on[:right] = tmp

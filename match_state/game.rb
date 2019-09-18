@@ -6,13 +6,13 @@ class MatchState
 
     def initialize(is_final_set: false)
       @is_final_set = is_final_set
-      @final_set_change_over_done = false
+      @final_set_sides_switched = false
       @p1_score = 0
       @p2_score = 0
     end
 
-    def need_change_over?
-      @is_final_set && !@final_set_change_over_done && p1_score + p2_score == 7
+    def waiting_for_final_set_switching_of_sides?
+      @is_final_set && !@final_set_sides_switched && p1_score + p2_score == 7
     end
 
     def finished?
@@ -35,8 +35,8 @@ class MatchState
       @p2_score += 1
     end
 
-    def do_final_set_change_over
-      @final_set_change_over_done = true
+    def final_set_switch_sides
+      @final_set_sides_switched = true
     end
 
     def inspect

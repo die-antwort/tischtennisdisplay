@@ -17,7 +17,7 @@ RSpec.describe MatchState do
     expect(match_state.current_set_nr).to eq(1)
   end
 
-  it "handles changeover" do
+  it "handles switching of sides" do
     input =
       [l] * 12 +   # Game 1: p1 vs. p2, left side = p1 wins
       [l] * 1      # Game 2: p2 vs. p1, current score 1:0
@@ -29,7 +29,7 @@ RSpec.describe MatchState do
     expect(match_state.current_set_nr).to eq(2)
   end
 
-  it "handles changeover in last game and knows when it is waiting for changeover" do
+  it "handles switching of sides in last game and knows when it is waiting to switch sides" do
     input =
       [l] * 12 +   # Game 1: p1 vs. p2, left side = p1 wins
       [l] * 12 +   # Game 2: p2 vs. p1, left side = p2 wins
@@ -42,17 +42,17 @@ RSpec.describe MatchState do
     expect(match_state.p2_set_score).to eq(2)
     expect(match_state.score_for_side(:left)).to eq(6)
     expect(match_state.score_for_side(:right)).to eq(0)
-    expect(match_state.waiting_for_final_set_change_over?).to eq(false)
+    expect(match_state.waiting_for_final_set_switching_of_sides?).to eq(false)
 
-    input << l # 7:0, now waiting for changeover
+    input << l # 7:0, now waiting to switch sides
     match_state = match_state(input, max_set_count: 5)
     expect(match_state.score_for_side(:left)).to eq(7)
     expect(match_state.score_for_side(:right)).to eq(0)
-    expect(match_state.waiting_for_final_set_change_over?).to eq(true)
+    expect(match_state.waiting_for_final_set_switching_of_sides?).to eq(true)
 
-    input << l << l # first input confirms changeover (7:0 -> 0:7), second input changes score to 1:7
+    input << l << l # first input confirms switching of sides (7:0 -> 0:7), second input changes score to 1:7
     match_state = match_state(input, max_set_count: 5)
-    expect(match_state.waiting_for_final_set_change_over?).to eq(false)
+    expect(match_state.waiting_for_final_set_switching_of_sides?).to eq(false)
     expect(match_state.score_for_side(:left)).to eq(1)
     expect(match_state.score_for_side(:right)).to eq(7)
   end

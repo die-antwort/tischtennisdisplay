@@ -51,7 +51,7 @@ class Main
         {effect: :rotate_ccw, side: match.winner_side}
       elsif match.set_finished?
         {effect: :rotate_cw, side: match.set_winner_side}
-      elsif match.waiting_for_final_set_change_over?
+      elsif match.waiting_for_final_set_switching_of_sides?
         {effect: :rotate_bounce}
       else
         {}
