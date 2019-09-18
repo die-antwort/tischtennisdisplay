@@ -79,7 +79,7 @@ class GameState
   end
 
   def waiting_for_final_set_change_over?
-    sets.size == winning_set_score * 2 - 1 && p1_score + p2_score == 7 &&
+    current_set.need_change_over? &&
       !@changed_over_in_final_set
   end
 
@@ -107,7 +107,7 @@ class GameState
   end
 
   def start_new_set
-    sets << Set.new
+    sets << Set.new(is_final_set: sets.size == winning_set_score * 2 - 2)
   end
 
   def winning_set_score_for_max_set_count(max_set_count)

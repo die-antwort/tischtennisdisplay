@@ -4,9 +4,14 @@ class GameState
 
     attr_reader :p1_score, :p2_score
 
-    def initialize
+    def initialize(is_final_set: false)
+      @is_final_set = is_final_set
       @p1_score = 0
       @p2_score = 0
+    end
+
+    def need_change_over?
+      @is_final_set && p1_score + p2_score == 7
     end
 
     def finished?
