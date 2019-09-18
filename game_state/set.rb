@@ -6,12 +6,13 @@ class GameState
 
     def initialize(is_final_set: false)
       @is_final_set = is_final_set
+      @final_set_change_over_done = false
       @p1_score = 0
       @p2_score = 0
     end
 
     def need_change_over?
-      @is_final_set && p1_score + p2_score == 7
+      @is_final_set && !@final_set_change_over_done && p1_score + p2_score == 7
     end
 
     def finished?
@@ -32,6 +33,10 @@ class GameState
 
     def p2_scored
       @p2_score += 1
+    end
+
+    def do_final_set_change_over
+      @final_set_change_over_done = true
     end
 
     def inspect

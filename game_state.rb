@@ -10,7 +10,6 @@ class GameState
   def initialize(input, max_set_count: 3)
     @sets = [Set.new]
     @winning_set_score = winning_set_score_for_max_set_count(max_set_count)
-    @changed_over_in_final_set = false
     @player_on = {left: 1, right: 2}
     input.each do |c|
       update_state c
@@ -24,7 +23,7 @@ class GameState
       start_new_set
     elsif waiting_for_final_set_change_over?
       change_over
-      @changed_over_in_final_set = true
+      current_set.do_final_set_change_over
     else
       handle_input(c)
     end
@@ -77,8 +76,7 @@ class GameState
   end
 
   def waiting_for_final_set_change_over?
-    current_set.need_change_over? &&
-      !@changed_over_in_final_set
+    current_set.need_change_over?
   end
 
   def handle_input(c)
