@@ -45,6 +45,7 @@ RSpec.describe Main do
   end
 
   it 'asks if the match should be “best of 3” or “best of 5”' do
+    enter('l') # wake up
     expect(@score_board.state).to eq [[3, :blink_alternating], [5, :blink_alternating]]
     enter('l')
     expect(@main.match.max_set_count).to eq 3
@@ -52,6 +53,7 @@ RSpec.describe Main do
   end
 
   it 'processes inputs as expected' do
+    enter('l') # wake up
     enter('l') # “best of 3”
     enter(%w(l) * 11)
     expect(@score_board.state).to eq [[11, :rotate_cw], [0, nil]]

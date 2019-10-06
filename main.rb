@@ -21,6 +21,7 @@ class Main
   end
 
   def run
+    @input.get
     max_set_count = ask_for_max_set_count
     puts "Starting a best of #{max_set_count} match."
     @match = Match.new(max_set_count: max_set_count)
