@@ -64,11 +64,18 @@ end
 
 if $0 == __FILE__
   main =
-    if ARGV.shift == "pi"
+    if ARGV[0] == "pi"
       require_relative "button_input"
       require_relative "score_board"
       Main.new(
         ButtonInput.new(PINS[:left_button_pin], PINS[:right_button_pin]),
+        ScoreBoard.new(P1_SHIFT_REGISTER, P2_SHIFT_REGISTER, PINS[:clock_pin])
+      )
+    elsif ARGV[0] == "pi-keyboard"
+      require_relative "console_input"
+      require_relative "score_board"
+      Main.new(
+        ConsoleInput.new,
         ScoreBoard.new(P1_SHIFT_REGISTER, P2_SHIFT_REGISTER, PINS[:clock_pin])
       )
     else
