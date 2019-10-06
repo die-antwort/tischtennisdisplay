@@ -4,15 +4,15 @@ class MatchState
 
     attr_reader :p1_score, :p2_score
 
-    def initialize(is_final_set: false)
-      @is_final_set = is_final_set
-      @final_set_sides_switched = false
+    def initialize(is_final_game: false)
+      @is_final_game = is_final_game
+      @final_game_sides_switched = false
       @p1_score = 0
       @p2_score = 0
     end
 
-    def waiting_for_final_set_switching_of_sides?
-      @is_final_set && !@final_set_sides_switched && [p1_score, p2_score].max == 5
+    def waiting_for_final_game_switching_of_sides?
+      @is_final_game && !@final_game_sides_switched && [p1_score, p2_score].max == 5
     end
 
     def finished?
@@ -35,8 +35,8 @@ class MatchState
       @p2_score += 1
     end
 
-    def final_set_switch_sides
-      @final_set_sides_switched = true
+    def final_game_switch_sides
+      @final_game_sides_switched = true
     end
 
     def inspect

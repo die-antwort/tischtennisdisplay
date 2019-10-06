@@ -17,7 +17,7 @@ RSpec.describe Match do
     match = match_with_input_sequence([l, l, r, r, l, l])
     expect(match.score_for_side(:left)).to eq(4)
     expect(match.score_for_side(:right)).to eq(2)
-    expect(match.current_set_nr).to eq(1)
+    expect(match.current_game_nr).to eq(1)
   end
 
   it "can undo" do
@@ -38,42 +38,42 @@ RSpec.describe Match do
     expect(match.score_for_side(:right)).to eq(1)
   end
 
-  it "can undo across sets" do
+  it "can undo across games" do
     match = match_with_input_sequence([l] * 11)
     expect(match.score_for_side(:left)).to eq(11)
     expect(match.score_for_side(:right)).to eq(0)
-    expect(match.current_set_nr).to eq(1)
-    expect(match.p1_set_score).to eq(1)
-    expect(match.p2_set_score).to eq(0)
+    expect(match.current_game_nr).to eq(1)
+    expect(match.p1_game_score).to eq(1)
+    expect(match.p2_game_score).to eq(0)
 
     match.handle_input(l) # acknowledge first game, start second game
     expect(match.score_for_side(:left)).to eq(0)
     expect(match.score_for_side(:right)).to eq(0)
-    expect(match.current_set_nr).to eq(2)
-    expect(match.p1_set_score).to eq(1)
-    expect(match.p2_set_score).to eq(0)
+    expect(match.current_game_nr).to eq(2)
+    expect(match.p1_game_score).to eq(1)
+    expect(match.p2_game_score).to eq(0)
 
     match.undo
     expect(match.score_for_side(:left)).to eq(11)
     expect(match.score_for_side(:right)).to eq(0)
-    expect(match.current_set_nr).to eq(1)
-    expect(match.p1_set_score).to eq(1)
-    expect(match.p2_set_score).to eq(0)
+    expect(match.current_game_nr).to eq(1)
+    expect(match.p1_game_score).to eq(1)
+    expect(match.p2_game_score).to eq(0)
 
     match.undo
     expect(match.score_for_side(:left)).to eq(10)
     expect(match.score_for_side(:right)).to eq(0)
-    expect(match.current_set_nr).to eq(1)
-    expect(match.p1_set_score).to eq(0)
-    expect(match.p2_set_score).to eq(0)
+    expect(match.current_game_nr).to eq(1)
+    expect(match.p1_game_score).to eq(0)
+    expect(match.p2_game_score).to eq(0)
   end
 
   it 'has a valid score even if the input is empty' do
     match = Match.new
     expect(match.score_for_side(:left)).to eq(0)
     expect(match.score_for_side(:right)).to eq(0)
-    expect(match.current_set_nr).to eq(1)
-    expect(match.p1_set_score).to eq(0)
-    expect(match.p2_set_score).to eq(0)
+    expect(match.current_game_nr).to eq(1)
+    expect(match.p1_game_score).to eq(0)
+    expect(match.p2_game_score).to eq(0)
   end
 end

@@ -48,7 +48,7 @@ RSpec.describe Main do
     enter('l') # wake up
     expect(@score_board.state).to eq [[3, :blink_alternating], [5, :blink_alternating]]
     enter('l')
-    expect(@main.match.max_set_count).to eq 3
+    expect(@main.match.max_game_count).to eq 3
     expect(@score_board.state).to eq [[0, nil], [0, nil]]
   end
 
@@ -57,21 +57,21 @@ RSpec.describe Main do
     enter('l') # “best of 3”
     enter(%w(l) * 11)
     expect(@score_board.state).to eq [[11, :rotate_cw], [0, nil]]
-    expect(@main.match.p1_set_score).to eq 1
+    expect(@main.match.p1_game_score).to eq 1
     enter('r') # “next game”
     expect(@score_board.state).to eq [[0, nil], [0, nil]]
     enter(%w(L) * 2) # “undo”
     expect(@score_board.state).to eq [[10, nil], [0, nil]]
     enter(%w(r) * 12)
     expect(@score_board.state).to eq [[10, nil], [12, :rotate_cw]]
-    expect(@main.match.p1_set_score).to eq 0
-    expect(@main.match.p2_set_score).to eq 1
+    expect(@main.match.p1_game_score).to eq 0
+    expect(@main.match.p2_game_score).to eq 1
     enter('r') # “next game”
     expect(@score_board.state).to eq [[0, nil], [0, nil]]
     enter(%w(l) * 11)
     expect(@score_board.state).to eq [[11, :rotate_ccw], [nil, nil]]
-    expect(@main.match.p1_set_score).to eq 0
-    expect(@main.match.p2_set_score).to eq 2
+    expect(@main.match.p1_game_score).to eq 0
+    expect(@main.match.p2_game_score).to eq 2
     expect(@main.match.match_finished?).to be true
   end
 end

@@ -22,8 +22,8 @@ class Main
 
   def run
     @input.get
-    max_set_count = ask_for_max_set_count
-    @match = Match.new(max_set_count: max_set_count)
+    max_game_count = ask_for_max_game_count
+    @match = Match.new(max_game_count: max_game_count)
 
     loop do
       update_score_board(@match)
@@ -39,7 +39,7 @@ class Main
 
   private
 
-  def ask_for_max_set_count
+  def ask_for_max_game_count
     @score_board.display(3, 5, effect: :blink_alternating)
     @input.get.left? ? 3 : 5
   end
@@ -49,9 +49,9 @@ class Main
     options =
       if match.match_finished?
         {effect: :rotate_ccw, side: match.winner_side}
-      elsif match.set_finished?
-        {effect: :rotate_cw, side: match.set_winner_side}
-      elsif match.waiting_for_final_set_switching_of_sides?
+      elsif match.game_finished?
+        {effect: :rotate_cw, side: match.game_winner_side}
+      elsif match.waiting_for_final_game_switching_of_sides?
         {effect: :rotate_bounce}
       else
         {}
