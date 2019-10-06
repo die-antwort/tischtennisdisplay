@@ -60,7 +60,7 @@ class Main
       elsif match.waiting_for_final_game_switching_of_sides?
         {effect: :rotate_bounce}
       else
-        {effect: :flash_twice, side: match.side_having_service}
+        {effect: :flash_twice_after_delay, side: match.side_having_service}
       end
     left = match.score_for_side(:left) unless match.match_finished? && match.winner_side == :right
     right = match.score_for_side(:right) unless match.match_finished? && match.winner_side == :left

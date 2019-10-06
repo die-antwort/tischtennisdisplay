@@ -3,7 +3,7 @@ require_relative "./untroubled_pi_piper"
 
 class ScoreBoard
   BLINK_DELAY = 0.500
-  FLASH_TWICE_DELAY = 0.250
+  FLASH_TWICE_DELAY = [1.000, 0.150] # first value is delay before flashing
   ROTATE_DELAY = 0.100
   SCROLL_DELAY = 0.500
 
@@ -37,11 +37,15 @@ class ScoreBoard
           sleep(BLINK_DELAY)
           update(nil, right_bits)
           sleep(BLINK_DELAY)
-        when :flash_twice
+        when :flash_twice_after_delay
           update(left_bits, right_bits)
-          sleep(FLASH_TWICE_DELAY)
+          sleep(FLASH_TWICE_DELAY[0])
+          @effect = :flash_twice_after_delay_continue
+        when :flash_twice_after_delay_continue
+          update(left_bits, right_bits)
+          sleep(FLASH_TWICE_DELAY[1])
           update((left_bits if @side == :right), (right_bits if @side == :left))
-          sleep(FLASH_TWICE_DELAY)
+          sleep(FLASH_TWICE_DELAY[1])
           if (flash_twice_count += 1) == 2
             flash_twice_count = 0
             @effect = nil
@@ -72,10 +76,10 @@ class ScoreBoard
   #just updating state here
   #thread @t redraws it
   def display(left, right, effect: nil, side: nil)
-    @left_str = left.to_s
-    @right_str = right.to_s
     @effect = effect
     @side = side
+    @left_str = left.to_s
+    @right_str = right.to_s
     @left_str = @left_str.split(//).cycle if @left_str && effect == :scroll && side != :right
     @right_str = @right_str.split(//).cycle if @right_str && effect == :scroll && side != :left
   end

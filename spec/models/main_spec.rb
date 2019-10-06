@@ -50,7 +50,7 @@ RSpec.describe Main do
     enter('l') # left side serves first
     enter('l')
     expect(@main.match.max_game_count).to eq 3
-    expect(@score_board.state).to eq [[0, :flash_twice], [0, nil]]
+    expect(@score_board.state).to eq [[0, :flash_twice_after_delay], [0, nil]]
   end
 
   it 'processes inputs as expected' do
@@ -61,15 +61,15 @@ RSpec.describe Main do
     expect(@score_board.state).to eq [[11, :rotate_cw], [0, nil]]
     expect(@main.match.p1_game_score).to eq 1
     enter('r') # “next game”
-    expect(@score_board.state).to eq [[0, :flash_twice], [0, nil]]
+    expect(@score_board.state).to eq [[0, :flash_twice_after_delay], [0, nil]]
     enter(%w(L) * 2) # “undo”
-    expect(@score_board.state).to eq [[10, nil], [0, :flash_twice]]
+    expect(@score_board.state).to eq [[10, nil], [0, :flash_twice_after_delay]]
     enter(%w(r) * 12)
     expect(@score_board.state).to eq [[10, nil], [12, :rotate_cw]]
     expect(@main.match.p1_game_score).to eq 0
     expect(@main.match.p2_game_score).to eq 1
     enter('r') # “next game”
-    expect(@score_board.state).to eq [[0, :flash_twice], [0, nil]]
+    expect(@score_board.state).to eq [[0, :flash_twice_after_delay], [0, nil]]
     enter(%w(l) * 11)
     expect(@score_board.state).to eq [[11, :rotate_ccw], [nil, nil]]
     expect(@main.match.p1_game_score).to eq 0
