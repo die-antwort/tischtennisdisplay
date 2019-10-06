@@ -4,7 +4,8 @@ class MatchState
 
     attr_reader :p1_score, :p2_score
 
-    def initialize(is_final_game: false)
+    def initialize(player_having_first_service:, is_final_game: false)
+      @player_having_first_service =  player_having_first_service
       @is_final_game = is_final_game
       @final_game_sides_switched = false
       @p1_score = 0
@@ -17,6 +18,22 @@ class MatchState
 
     def finished?
       (p1_score - p2_score).abs >= MIN_DIFFERENCE && [p1_score, p2_score].max >= WINNING_SCORE
+    end
+
+    def deuce?
+      p1_score >= WINNING_SCORE - 1 && p2_score >= WINNING_SCORE - 1
+    end
+
+    def other_player(player)
+      3 - player
+    end
+
+    def player_having_service
+      if deuce?
+        p1_score == p2_score ? @player_having_first_service : other_player(@player_having_first_service)
+      else
+        ((p1_score + p2_score) / 2).even? ? @player_having_first_service : other_player(@player_having_first_service)
+      end
     end
 
     def p1_won?

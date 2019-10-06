@@ -23,7 +23,8 @@ class Main
   def run
     @input.get
     max_game_count = ask_for_max_game_count
-    @match = Match.new(max_game_count: max_game_count)
+    side_having_first_service = :left # FIXME: must be variable
+    @match = Match.new(side_having_first_service: side_having_first_service, max_game_count: max_game_count)
 
     loop do
       update_score_board(@match)
@@ -54,7 +55,7 @@ class Main
       elsif match.waiting_for_final_game_switching_of_sides?
         {effect: :rotate_bounce}
       else
-        {}
+        {effect: :flash_twice, side: match.side_having_service}
       end
     left = match.score_for_side(:left) unless match.match_finished? && match.winner_side == :right
     right = match.score_for_side(:right) unless match.match_finished? && match.winner_side == :left

@@ -6,7 +6,7 @@ RSpec.describe Match do
   include InputEventHelpers
 
   def match_with_input_sequence(input)
-    match = Match.new
+    match = Match.new(side_having_first_service: :left)
     input.each do |c|
       match.handle_input(c)
     end
@@ -69,7 +69,7 @@ RSpec.describe Match do
   end
 
   it 'has a valid score even if the input is empty' do
-    match = Match.new
+    match = Match.new(side_having_first_service: :left)
     expect(match.score_for_side(:left)).to eq(0)
     expect(match.score_for_side(:right)).to eq(0)
     expect(match.current_game_nr).to eq(1)

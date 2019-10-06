@@ -6,8 +6,8 @@ require_relative "../../match_state"
 RSpec.describe MatchState do
   include InputEventHelpers
 
-  def match_state(input, max_game_count: 3)
-    MatchState.new(input, max_game_count: max_game_count)
+  def match_state(input, side_having_first_service: :left, max_game_count: 3)
+    MatchState.new(input, side_having_first_service: side_having_first_service, max_game_count: max_game_count)
   end
 
   it "handles a valid input sequence" do
@@ -89,6 +89,31 @@ RSpec.describe MatchState do
     expect(match_state.winner_side).to eq(:right)
   end
 
+  it "knows who has the next service" do
+    def service_side_for(input)
+      match_state(input, side_having_first_service: :left).side_having_service
+    end
+
+    expect(match_state([], side_having_first_service: :left).side_having_service).to eq(:left)
+    expect(match_state([], side_having_first_service: :right).side_having_service).to eq(:right)
+
+    expect(service_side_for([l])).to eq(:left)
+    expect(service_side_for([l, l])).to eq(:right)
+    expect(service_side_for([l, l, l])).to eq(:right)
+    expect(service_side_for([l, l, l, r])).to eq(:left)
+
+    input = [l] * 10 + [r] * 10 # deuce (10:10)
+    expect(service_side_for(input)).to eq(:left)
+    input << l
+    expect(service_side_for(input)).to eq(:right)
+    input << r
+    expect(service_side_for(input)).to eq(:left)
+    input << r
+    input << r # “right” wins first game
+    input << r # ack end of first game, players switch sides
+    expect(service_side_for(input)).to eq(:left) # new game, other player has first service, but because they switched sides it’s still the left side having service
+  end
+
   it "knows when game is finished" do
     input = [l] * 10 # current score 10:0
     match_state = match_state(input)
@@ -136,15 +161,15 @@ RSpec.describe MatchState do
   end
 
   it 'calculates winning_game_score from :max_game_count' do
-    expect(MatchState.new([], max_game_count: 1).winning_game_score).to eq(1)
-    expect(MatchState.new([], max_game_count: 3).winning_game_score).to eq(2)
-    expect(MatchState.new([], max_game_count: 5).winning_game_score).to eq(3)
-    expect(MatchState.new([], max_game_count: 7).winning_game_score).to eq(4)
+    expect(MatchState.new([], side_having_first_service: :left, max_game_count: 1).winning_game_score).to eq(1)
+    expect(MatchState.new([], side_having_first_service: :left, max_game_count: 3).winning_game_score).to eq(2)
+    expect(MatchState.new([], side_having_first_service: :left, max_game_count: 5).winning_game_score).to eq(3)
+    expect(MatchState.new([], side_having_first_service: :left, max_game_count: 7).winning_game_score).to eq(4)
   end
 
   it 'throws an expection if max_game_count is invalid' do
-    expect{ MatchState.new([], max_game_count: -1).winning_game_score }.to raise_error(ArgumentError)
-    expect{ MatchState.new([], max_game_count: 0).winning_game_score }.to raise_error(ArgumentError)
-    expect{ MatchState.new([], max_game_count: 4).winning_game_score }.to raise_error(ArgumentError)
+    expect{ MatchState.new([], side_having_first_service: :left, max_game_count: -1).winning_game_score }.to raise_error(ArgumentError)
+    expect{ MatchState.new([], side_having_first_service: :left, max_game_count: 0).winning_game_score }.to raise_error(ArgumentError)
+    expect{ MatchState.new([], side_having_first_service: :left, max_game_count: 4).winning_game_score }.to raise_error(ArgumentError)
   end
 end

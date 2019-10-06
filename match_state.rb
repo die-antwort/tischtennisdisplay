@@ -7,10 +7,11 @@ class MatchState
 
   MIN_GAME_DIFFERENCE = 1
 
-  def initialize(input, max_game_count: 3)
-    @games = [Game.new]
-    @winning_game_score = winning_game_score_for_max_game_count(max_game_count)
+  def initialize(input, side_having_first_service:, max_game_count: 3)
+    @side_having_first_service = side_having_first_service
     @player_on = {left: 1, right: 2}
+    @games = [Game.new(player_having_first_service: @player_on[@side_having_first_service])]
+    @winning_game_score = winning_game_score_for_max_game_count(max_game_count)
     input.each do |c|
       update_state c
     end
@@ -53,6 +54,10 @@ class MatchState
     else
       current_game.p2_score
     end
+  end
+
+  def side_having_service
+    @player_on.invert[current_game.player_having_service]
   end
 
   def p1_game_score
@@ -103,7 +108,10 @@ class MatchState
   end
 
   def start_new_game
-    games << Game.new(is_final_game: games.size == winning_game_score * 2 - 2)
+    games << Game.new(
+      player_having_first_service: @player_on[@side_having_first_service], # it’s always this side because player switch sides
+      is_final_game: games.size == winning_game_score * 2 - 2
+    )
   end
 
   def winning_game_score_for_max_game_count(max_game_count)

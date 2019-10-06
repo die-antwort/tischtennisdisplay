@@ -3,13 +3,14 @@ require_relative "match_state"
 class Match
   attr_reader :max_game_count
 
-  %i(current_game_nr p1_game_score p2_game_score game_finished? game_winner_side winner_side match_finished? waiting_for_final_game_switching_of_sides? inspect).each do |method|
+  %i(current_game_nr p1_game_score p2_game_score game_finished? game_winner_side side_having_service winner_side match_finished? waiting_for_final_game_switching_of_sides? inspect).each do |method|
     define_method method do
       @match_state.public_send(method)
     end
   end
 
-  def initialize(max_game_count: 3)
+  def initialize(side_having_first_service:, max_game_count: 3)
+    @side_having_first_service = side_having_first_service
     @max_game_count = max_game_count
     @history = []
     set_game_state
@@ -26,7 +27,11 @@ class Match
   end
 
   def set_game_state
-    @match_state = MatchState.new(@history, max_game_count: max_game_count)
+    @match_state = MatchState.new(
+      @history,
+      side_having_first_service: @side_having_first_service,
+      max_game_count: max_game_count
+    )
   end
 
   def score_for_side(side)
