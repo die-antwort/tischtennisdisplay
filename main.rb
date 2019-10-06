@@ -23,7 +23,7 @@ class Main
   def run
     @input.get
     max_game_count = ask_for_max_game_count
-    side_having_first_service = :left # FIXME: must be variable
+    side_having_first_service = ask_for_side_having_first_service
     @match = Match.new(side_having_first_service: side_having_first_service, max_game_count: max_game_count)
 
     loop do
@@ -43,6 +43,11 @@ class Main
   def ask_for_max_game_count
     @score_board.display(3, 5, effect: :blink_alternating)
     @input.get.left? ? 3 : 5
+  end
+
+  def ask_for_side_having_first_service
+    @score_board.display('SERVICE ', 'SERVICE ', effect: :scroll)
+    @input.get.left? ? :left : :right
   end
 
 
