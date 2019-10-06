@@ -35,6 +35,8 @@ class StringToScoreBoardBitConverter
 
   def self.convert(string_or_int)
     string = string_or_int.to_s
+    return 0b0000_0000 if string == ""
+
     raise ArgumentError, "Can not convert '#{string_or_int}'." unless string =~ /\A1?[#{CHARACTERS.keys}]\z/
 
     if string.length == 2
