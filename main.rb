@@ -54,7 +54,7 @@ class Main
   private
 
   def ask_for_max_game_count
-    @score_board.display(3, 5, effect: :blink_alternating)
+    @score_board.display(3, 5, effect: :blink)
     @input.get.left? ? 3 : 5
   end
 
