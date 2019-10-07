@@ -11,17 +11,29 @@ PINS = {
 P1_SHIFT_REGISTER = '/dev/spidev0.0'.freeze
 P2_SHIFT_REGISTER = '/dev/spidev0.1'.freeze
 
+INACTIVITY_TIMEOUT = 10 * 60 # seconds
+
 class Main
   attr_reader :score_board, :match
 
   def initialize(input, score_board)
     @input = input
     @score_board = score_board
+    @last_activity_at = Time.now
     Thread.abort_on_exception = true
+    Thread.new do
+      loop do
+        if Time.now - @last_activity_at > INACTIVITY_TIMEOUT
+          exit
+        end
+        sleep(1)
+      end
+    end
   end
 
   def run
     @input.get
+    @last_activity_at = Time.now
     max_game_count = ask_for_max_game_count
     side_having_first_service = ask_for_side_having_first_service
     @match = Match.new(side_having_first_service: side_having_first_service, max_game_count: max_game_count)
@@ -29,6 +41,7 @@ class Main
     loop do
       update_score_board(@match)
       c = @input.get
+      @last_activity_at = Time.now
       break if @match.match_finished?
       if c.undo?
         @match.undo
@@ -69,26 +82,26 @@ class Main
 end
 
 if $0 == __FILE__
-  main =
-    if ARGV[0] == "pi"
-      require_relative "button_input"
-      require_relative "score_board"
-      Main.new(
-        ButtonInput.new(PINS[:left_button_pin], PINS[:right_button_pin]),
-        ScoreBoard.new(P1_SHIFT_REGISTER, P2_SHIFT_REGISTER, PINS[:clock_pin])
-      )
-    elsif ARGV[0] == "pi-keyboard"
-      require_relative "console_input"
-      require_relative "score_board"
-      Main.new(
-        ConsoleInput.new,
-        ScoreBoard.new(P1_SHIFT_REGISTER, P2_SHIFT_REGISTER, PINS[:clock_pin])
-      )
-    else
-      require_relative "console_input"
-      require_relative "console_score_board"
-      Main.new(ConsoleInput.new, ConsoleScoreBoard.new)
-    end
+  if ARGV[0] == "pi"
+    require_relative "button_input"
+    require_relative "score_board"
+    input = ButtonInput.new(PINS[:left_button_pin], PINS[:right_button_pin])
+    score_board = ScoreBoard.new(P1_SHIFT_REGISTER, P2_SHIFT_REGISTER, PINS[:clock_pin])
+  elsif ARGV[0] == "pi-keyboard"
+    require_relative "console_input"
+    require_relative "score_board"
+    input = ConsoleInput.new
+    score_board = ScoreBoard.new(P1_SHIFT_REGISTER, P2_SHIFT_REGISTER, PINS[:clock_pin])
+  else
+    require_relative "console_input"
+    require_relative "console_score_board"
+    input = ConsoleInput.new
+    score_board = ConsoleScoreBoard.new
+  end
 
-  main.run
+  at_exit do
+    score_board.display(nil, nil)
+  end
+
+  Main.new(input, score_board).run
 end
