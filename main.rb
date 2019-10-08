@@ -90,6 +90,7 @@ end
 if $0 == __FILE__
   if ARGV[0] == "pi"
     $logger = Logger.new(STDERR)
+    $logger.formatter = ->(severity, _datetime, _progname, msg){ "TTD -- #{severity} #{msg}\n" }
     require_relative "untroubled_pi_piper"
     require_relative "button_input"
     require_relative "score_board"
