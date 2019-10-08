@@ -1,6 +1,5 @@
 require "concurrent-edge"
 require_relative "./input_event"
-require_relative "./untroubled_pi_piper"
 
 class ButtonInput
   LONG_PRESS_DURATION = 1

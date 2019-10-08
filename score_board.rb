@@ -1,5 +1,4 @@
 require_relative "./string_to_score_board_converter"
-require_relative "./untroubled_pi_piper"
 
 class ScoreBoard
   BLINK_DELAY = 0.500
