@@ -2,7 +2,7 @@ require_relative "./string_to_score_board_converter"
 
 class ScoreBoard
   BLINK_DELAY = 0.500
-  FLASH_TWICE_DELAY = [1.000, 0.150] # first value is delay before flashing
+  FLASH_TWICE_DELAY = [0.500, 0.100] # first value is delay before flashing
   ROTATE_DELAY = 0.100
   SCROLL_DELAY = 0.500
 
@@ -39,16 +39,14 @@ class ScoreBoard
         when :flash_twice_after_delay
           update(left_bits, right_bits)
           sleep(FLASH_TWICE_DELAY[0])
+          flash_twice_count = 0
           @effect = :flash_twice_after_delay_continue
         when :flash_twice_after_delay_continue
           update(left_bits, right_bits)
           sleep(FLASH_TWICE_DELAY[1])
           update((left_bits if @side == :right), (right_bits if @side == :left))
           sleep(FLASH_TWICE_DELAY[1])
-          if (flash_twice_count += 1) == 2
-            flash_twice_count = 0
-            @effect = nil
-          end
+          @effect = nil if (flash_twice_count += 1) == 3
         when :rotate_cw
           bit_sequence = StringToScoreBoardBitConverter.rotation_sequence_cw.cycle
           @effect = :rotate_continue
