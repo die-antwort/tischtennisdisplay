@@ -71,7 +71,7 @@ class Main
       elsif match.game_finished?
         {effect: :rotate_cw, side: match.game_winner_side}
       elsif match.waiting_for_final_game_switching_of_sides?
-        {effect: :rotate_bounce}
+        {effect: :switch_over}
       else
         {effect: :flash_twice_after_delay, side: match.side_having_service}
       end
