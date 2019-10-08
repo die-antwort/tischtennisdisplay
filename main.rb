@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 require "bundler"
+require "logger"
+require "stringio"
 require_relative "match"
 
 PINS = {
@@ -24,6 +26,7 @@ class Main
     Thread.new do
       loop do
         if Time.now - @last_activity_at > INACTIVITY_TIMEOUT
+          $logger.info "Inactivity timeout reachend, exiting"
           exit
         end
         sleep(1)
@@ -32,7 +35,9 @@ class Main
   end
 
   def run
+    $logger.info "Starting up"
     @input.get
+    $logger.info "Starting match"
     @last_activity_at = Time.now
     max_game_count = ask_for_max_game_count
     side_having_first_service = ask_for_side_having_first_service
@@ -49,6 +54,7 @@ class Main
         @match.handle_input(c)
       end
     end
+    $logger.info "Match ended, exiting"
   end
 
   private
@@ -83,18 +89,23 @@ end
 
 if $0 == __FILE__
   if ARGV[0] == "pi"
+    $logger = Logger.new(STDERR)
     require_relative "untroubled_pi_piper"
     require_relative "button_input"
     require_relative "score_board"
     input = ButtonInput.new(PINS[:left_button_pin], PINS[:right_button_pin])
     score_board = ScoreBoard.new(P1_SHIFT_REGISTER, P2_SHIFT_REGISTER, PINS[:clock_pin])
   elsif ARGV[0] == "pi-keyboard"
+    $console_logdev = StringIO.new
+    $logger = Logger.new($console_logdev)
     require_relative "untroubled_pi_piper"
     require_relative "console_input"
     require_relative "score_board"
     input = ConsoleInput.new
     score_board = ScoreBoard.new(P1_SHIFT_REGISTER, P2_SHIFT_REGISTER, PINS[:clock_pin])
   else
+    $console_logdev = StringIO.new
+    $logger = Logger.new($console_logdev)
     require_relative "console_input"
     require_relative "console_score_board"
     input = ConsoleInput.new

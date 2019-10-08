@@ -23,6 +23,8 @@ class ConsoleScoreBoard < ScoreBoard
       Curses.setpos(i + 2, 40)
       Curses.addstr(r.to_s)
     end
+    Curses.setpos(17, 0)
+    Curses.addstr($console_logdev.string.lines.reverse.first(5).join())
     Curses.refresh
   end
 
