@@ -61,4 +61,14 @@ class StringToScoreBoardBitConverter
     bit_sequence.pop
     bit_sequence
   end
+
+  def self.switch_over_sequence_ltr
+    single_ltr = [0b0000_0001, 0b0110_0000, 0b0000_1100]
+    single_ltr + single_ltr[1..-1].reverse
+  end
+
+  def self.switch_over_sequence_rtl
+    single_rtl = [0b0000_0001, 0b0110_0000, 0b0000_1100].reverse
+    single_rtl + single_rtl[1..-1].reverse
+  end
 end

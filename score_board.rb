@@ -5,6 +5,7 @@ class ScoreBoard
   FLASH_TWICE_DELAY = [0.500, 0.100] # first value is delay before flashing
   ROTATE_DELAY = 0.100
   SCROLL_DELAY = 0.500
+  SWITCH_OVER_DELAY = 0.300
 
   def initialize(p1_shift_register, p2_shift_register, clock_pin)
     @p1_shift_register = p1_shift_register
@@ -20,6 +21,8 @@ class ScoreBoard
   def start_thread
     Thread.new{
       bit_sequence = nil
+      bit_sequence_left = nil
+      bit_sequence_right = nil
       flash_twice_count = 0
       loop do
         left_bits = @left_str ? StringToScoreBoardBitConverter.convert(@effect == :scroll ? @left_str.next : @left_str) : nil
@@ -63,6 +66,15 @@ class ScoreBoard
         when :scroll
           update(left_bits, right_bits)
           sleep(SCROLL_DELAY)
+        when :switch_over
+          bit_sequence_left = StringToScoreBoardBitConverter.switch_over_sequence_ltr.cycle
+          bit_sequence_right = StringToScoreBoardBitConverter.switch_over_sequence_rtl.cycle
+          @effect = :switch_over_continue
+        when :switch_over_continue
+          left = bit_sequence_left.next
+          right = bit_sequence_right.next
+          update(left, right)
+          sleep(SWITCH_OVER_DELAY)
         else
           update(left_bits, right_bits)
         end
