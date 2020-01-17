@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require "httparty"
 require "bundler"
 require "logger"
 require "stringio"
@@ -14,6 +15,13 @@ P1_SHIFT_REGISTER = '/dev/spidev0.0'.freeze
 P2_SHIFT_REGISTER = '/dev/spidev0.1'.freeze
 
 INACTIVITY_TIMEOUT = 10 * 60 # seconds
+
+SPREADSHEET_ID = ENV['SS_ID']
+SPREADSHEET_TOKEN = ENV['SS_TOKEN']
+
+def postToSpreadsheet(data)
+  HTTParty.post("https://sheets.googleapis.com/v4/spreadsheets/#{SPREADSHEET_ID}/values/A1:append?insertDataOption=INSERT_ROWS&valueInputOption=RAW&alt=json", :headers => { "Content-Type" => "application/json", "Authorization" => "Bearer #{SPREADSHEET_TOKEN}"}, :body => { values: [data]}.to_json)
+end
 
 class Main
   attr_reader :score_board, :match
@@ -39,6 +47,7 @@ class Main
     @input.get
     $logger.info "Starting match"
     @last_activity_at = Time.now
+    players = ask_for_players
     max_game_count = ask_for_max_game_count
     side_having_first_service = ask_for_side_having_first_service
     @match = Match.new(side_having_first_service: side_having_first_service, max_game_count: max_game_count)
@@ -54,10 +63,48 @@ class Main
         @match.handle_input(c)
       end
     end
+
+    postToSpreadsheet([players[0], players[1], Time.new, { left: players[1], right: players[0]}[@match.winner_side]])
+
     $logger.info "Match ended, exiting"
   end
 
   private
+
+  def ask_for_players
+    players = [nil, nil]
+    players_select = [nil, nil]
+    @score_board.display('P', 'P', effect: :blink)
+
+    while players.compact.size < 2
+      input = @input.get
+      players_index = { left: 0, right: 1}[input.side]
+
+      if input.normal?
+        players_select[players_index] = players_select[players_index].to_i + 1
+        players_select[players_index] = players_select[players_index] % 10
+      end
+
+      if input.undo?
+        other_players_index = (players_index + 1) % players.length
+        players[players_index] = players_select[players_index] if players[other_players_index] != players_select[players_index]
+      end
+
+      display_options = {}
+
+      blink_left = players_select[0] == nil || players[0] != nil
+      blink_right = players_select[1] == nil || players[1] != nil
+
+      display_options.merge!({ effect: :blink }) if !players_select.all? || players.any?
+      display_options.merge!({ side: :left }) if blink_left && !blink_right
+      display_options.merge!({ side: :right }) if blink_right && !blink_left
+
+      @score_board.display(players_select[0] ? players_select[0] : 'P', players_select[1] ? players_select[1] : 'P', **display_options)
+    end
+
+    @score_board.display(' ', ' ', effect: :rotate_ccw)
+    sleep(2)
+  end
 
   def ask_for_max_game_count
     @score_board.display(3, 5, effect: :blink)

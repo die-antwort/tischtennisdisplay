@@ -10,6 +10,10 @@ class InputEvent
     @type = type
   end
 
+  def side
+    @side
+  end
+
   def left?
     @side == :left
   end

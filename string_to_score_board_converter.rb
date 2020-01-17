@@ -29,6 +29,7 @@ class StringToScoreBoardBitConverter
     "E" => 0b1111_0010,
     "I" => 0b0110_0000,
     "R" => 0b1010_0000,
+    "P" => 0b1110_0110,
     "S" => 0b1101_1010,
     "V" => 0b0011_1000,
   }.freeze
