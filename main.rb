@@ -54,6 +54,11 @@ class Main
 
     loop do
       update_score_board(@match)
+
+      if @match.match_finished?
+        postToSpreadsheet([players[0], players[1], Time.new, { left: players[1], right: players[0]}[@match.winner_side]])
+      end
+
       c = @input.get
       @last_activity_at = Time.now
       break if @match.match_finished?
@@ -63,8 +68,6 @@ class Main
         @match.handle_input(c)
       end
     end
-
-    postToSpreadsheet([players[0], players[1], Time.new, { left: players[1], right: players[0]}[@match.winner_side]])
 
     $logger.info "Match ended, exiting"
   end
