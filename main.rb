@@ -104,6 +104,8 @@ class Main
 
     @score_board.display(' ', ' ', effect: :rotate_ccw)
     sleep(2)
+
+    players
   end
 
   def ask_for_max_game_count
