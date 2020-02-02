@@ -45,31 +45,34 @@ class Main
   end
 
   def run
-    $logger.info "Starting up"
-    @input.get
-    $logger.info "Starting match"
-    @last_activity_at = Time.now
-
-    @score_board.display('PLAYER ', 'PLAYER ', effect: :scroll)
-    @input.get
-    begin
-      @score_board.display(nil, nil)
-      sleep(BEFORE_PLAYER_SELECTION_DELAY) # Make sure any previous effect (scrolling, blinking) has ended (so that first player number is displayed immediately)
-      @players = ask_for_players
-      @score_board.display(*players, effect: :blink)
-    end while @input.get.undo?
-
-    max_game_count = ask_for_max_game_count
-    side_having_first_service = ask_for_side_having_first_service
-
     loop do
-      run_match(@players, max_game_count, side_having_first_service)
-      $logger.info "Match ended, asking for rematch"
-      @score_board.display('Y', 'N', effect: :blink)
-      break if @input.get.right?
+      score_board.display(nil, nil)
+      $logger.info "Waiting for button press to start up"
+      @input.get
+      $logger.info "Starting match"
+      @last_activity_at = Time.now
 
-      @players = @players.reverse
-      $logger.info "Starting rematch"
+      @score_board.display('PLAYER ', 'PLAYER ', effect: :scroll)
+      @input.get
+      begin
+        @score_board.display(nil, nil)
+        sleep(BEFORE_PLAYER_SELECTION_DELAY) # Make sure any previous effect (scrolling, blinking) has ended (so that first player number is displayed immediately)
+        @players = ask_for_players
+        @score_board.display(*players, effect: :blink)
+      end while @input.get.undo?
+
+      max_game_count = ask_for_max_game_count
+      side_having_first_service = ask_for_side_having_first_service
+
+      loop do
+        run_match(@players, max_game_count, side_having_first_service)
+        $logger.info "Match ended, asking for rematch"
+        @score_board.display('Y', 'N', effect: :blink)
+        break if @input.get.right?
+
+        @players = @players.reverse
+        $logger.info "Starting rematch"
+      end
     end
   end
 
