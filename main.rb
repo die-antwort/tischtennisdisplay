@@ -61,26 +61,16 @@ class Main
 
     max_game_count = ask_for_max_game_count
     side_having_first_service = ask_for_side_having_first_service
-    @match = Match.new(side_having_first_service: side_having_first_service, max_game_count: max_game_count)
 
     loop do
-      update_score_board(@match)
+      run_match(@players, max_game_count, side_having_first_service)
+      $logger.info "Match ended, asking for rematch"
+      @score_board.display('Y', 'N', effect: :blink)
+      break if @input.get.right?
 
-      if @match.match_finished?
-        postToSpreadsheet([@players[0], @players[1], Time.new, { left: @players[1], right: @players[0]}[@match.winner_side]])
-      end
-
-      c = @input.get
-      @last_activity_at = Time.now
-      break if @match.match_finished?
-      if c.undo?
-        @match.undo
-      else
-        @match.handle_input(c)
-      end
+      @players = @players.reverse
+      $logger.info "Starting rematch"
     end
-
-    $logger.info "Match ended, exiting"
   end
 
   private
@@ -119,6 +109,26 @@ class Main
     @input.get.left? ? :left : :right
   end
 
+  def run_match(players, max_game_count, side_having_first_service)
+    @match = Match.new(side_having_first_service: side_having_first_service, max_game_count: max_game_count)
+
+    loop do
+      update_score_board(@match)
+
+      if @match.match_finished?
+        postToSpreadsheet([players[0], players[1], Time.new, { left: players[1], right: players[0]}[@match.winner_side]])
+      end
+
+      c = @input.get
+      @last_activity_at = Time.now
+      break if @match.match_finished?
+      if c.undo?
+        @match.undo
+      else
+        @match.handle_input(c)
+      end
+    end
+  end
 
   def update_score_board(match)
     options =

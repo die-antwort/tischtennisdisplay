@@ -80,10 +80,11 @@ RSpec.describe Main do
     enter('l') # wake up
     enter('l') # start player selection
     sleep(BEFORE_PLAYER_SELECTION_DELAY) # wait for player selection to start
-    enter('r') # right: player 1
+    enter('l') # right: player 0
     sleep(PLAYER_SELECTION_DELAY + 0.1) # now it should display "2" on the right side
-    enter('l') # left: player 2
+    enter('r') # left: player 1
     enter('l') # confirm player selection
+    expect(@main.players).to eq([0, 1])
     enter('l') # “best of 3”
     enter('l') # left side serves first
     enter(%w(l) * 11)
@@ -104,5 +105,11 @@ RSpec.describe Main do
     expect(@main.match.p1_game_score).to eq 0
     expect(@main.match.p2_game_score).to eq 2
     expect(@main.match.match_finished?).to be true
+    enter('l') # continue
+
+    expect(@score_board.state).to eq [["Y", :blink], ["N", :blink]] # ask for rematch
+    enter('l')
+    expect(@score_board.state).to eq [[0, :flash_twice_after_delay], [0, nil]]
+    expect(@main.players).to eq([1, 0])
   end
 end
