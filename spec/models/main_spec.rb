@@ -8,7 +8,7 @@ RSpec.describe Main do
       @inputs = []
     end
 
-    def get
+    def get(block: true)
       Fiber.yield while @inputs.empty?
       input_event_from_char(@inputs.shift)
     end
@@ -44,17 +44,46 @@ RSpec.describe Main do
     @fiber.resume
   end
 
-  it 'asks if the match should be “best of 3” or “best of 5”' do
+  it 'asks for the player ids (undo is possible!), if the match should be “best of 3” or “best of 5”, and for the side serving first' do
     enter('l') # wake up
-    expect(@score_board.state).to eq [[3, :blink], [5, :blink]]
+    expect(@score_board.state).to eq [["PLAYER ", :scroll], ["PLAYER ", :scroll]]
+    enter('l') # start player selection
+
+    sleep(BEFORE_PLAYER_SELECTION_DELAY) # wait for player selection to start actually
+    enter('l') # select player 0 for left side
+    sleep(PLAYER_SELECTION_DELAY + 0.1) # now it should display "1" on the right side
+    enter('r') # select player 1 for right side
+    expect(@score_board.state).to eq [[0, :blink], [1, :blink]] # confirmation
+    enter('L') # undo
+
+    sleep(BEFORE_PLAYER_SELECTION_DELAY) # wait for player selection to start actually
+    expect(@score_board.state).to eq [[0, nil], [0, nil]]
+    enter('r') # select player 0 for right side
+    sleep(PLAYER_SELECTION_DELAY + 0.1) # now it should display "1" on the left side
+    expect(@score_board.state).to eq [[1, nil], [0, nil]]
+    enter('l') # select player 1 for left side
+    expect(@score_board.state).to eq [[1, :blink], [0, :blink]] # confirmation
+    enter('l') # confirm
+
+    expect(@score_board.state).to eq [[3, :blink], [5, :blink]] # selection of winning sets
+    enter('l') # best of 3
+
+    expect(@score_board.state).to eq [["SERVICE ", :scroll], ["SERVICE ", :scroll]]
     enter('l') # left side serves first
-    enter('l')
-    expect(@main.match.max_game_count).to eq 3
+
     expect(@score_board.state).to eq [[0, :flash_twice_after_delay], [0, nil]]
+    expect(@main.match.max_game_count).to eq 3
+    expect(@main.players).to eq([1, 0])
   end
 
   it 'processes inputs as expected' do
     enter('l') # wake up
+    enter('l') # start player selection
+    sleep(BEFORE_PLAYER_SELECTION_DELAY) # wait for player selection to start
+    enter('r') # right: player 1
+    sleep(PLAYER_SELECTION_DELAY + 0.1) # now it should display "2" on the right side
+    enter('l') # left: player 2
+    enter('l') # confirm player selection
     enter('l') # “best of 3”
     enter('l') # left side serves first
     enter(%w(l) * 11)
