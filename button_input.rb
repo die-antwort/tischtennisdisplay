@@ -11,8 +11,12 @@ class ButtonInput
     connect(right_button_pin){ |action| add_input_event(action, :right) }
   end
 
-  def get
-    @inputs.take
+  def get(block: true)
+    if block
+      @inputs.take
+    else
+      @inputs.poll
+    end
   end
 
   private
