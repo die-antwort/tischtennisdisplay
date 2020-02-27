@@ -16,13 +16,16 @@ class ConsoleInput
   end
 
   def get(block: true)
-    char =
-      if block
-        @inputs.take
-      else
-        @inputs.poll
-      end
-    input_event_from_char(char)
+    loop do
+      char =
+        if block
+          @inputs.take
+        else
+          @inputs.poll
+        end
+      event = input_event_from_char(char)
+      break event if event || !block
+    end
   end
 
   private
