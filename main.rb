@@ -18,12 +18,8 @@ INACTIVITY_TIMEOUT = 10 * 60 # seconds
 BEFORE_PLAYER_SELECTION_DELAY = 0.5 # seconds (should be long enough for all effects - especiall blink and scroll - to end)
 PLAYER_SELECTION_DELAY = 0.75 # seconds
 
-SPREADSHEET_ID = ENV['SS_ID']
-SPREADSHEET_TOKEN = ENV['SS_TOKEN']
-
-def postToSpreadsheet(data)
-  HTTParty.post("https://sheets.googleapis.com/v4/spreadsheets/#{SPREADSHEET_ID}/values/A1:append?insertDataOption=INSERT_ROWS&valueInputOption=RAW&alt=json", :headers => { "Content-Type" => "application/json", "Authorization" => "Bearer #{SPREADSHEET_TOKEN}"}, :body => { values: [data]}.to_json)
-end
+OFFICE_API_URL = "https://api.buero.die-antwort.eu/resources/data_items".freeze
+OFFICE_API_TOKEN = ENV['API_TOKEN'].freeze
 
 class Main
   attr_reader :score_board, :match, :players
@@ -121,7 +117,18 @@ class Main
       update_score_board(@match)
 
       if @match.match_finished?
-        postToSpreadsheet([players[0], players[1], Time.new, { left: players[1], right: players[0]}[@match.winner_side]])
+        data = {
+          token: OFFICE_API_TOKEN,
+          source: "tischtennisdisplay",
+          type: "DataItems::TableTennisResultDataItem",
+          payload: {
+            player1: players[0],
+            player2: players[1],
+            winner: @match.winner,
+            games: @match.games.map{ |g| {p1_score: g.p1_score, p2_score: g.p2_score} },
+          },
+        }
+        HTTParty.post OFFICE_API_URL, body: data
       end
 
       c = @input.get

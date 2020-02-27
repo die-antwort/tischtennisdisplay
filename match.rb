@@ -3,7 +3,20 @@ require_relative "match_state"
 class Match
   attr_reader :max_game_count
 
-  %i(current_game_nr p1_game_score p2_game_score game_finished? game_winner_side side_having_service winner_side match_finished? waiting_for_final_game_switching_of_sides? inspect).each do |method|
+  %i[
+    current_game_nr
+    game_finished?
+    game_winner_side
+    games
+    inspect
+    match_finished?
+    p1_game_score
+    p2_game_score
+    side_having_service
+    waiting_for_final_game_switching_of_sides?
+    winner
+    winner_side
+  ].each do |method|
     define_method method do
       @match_state.public_send(method)
     end
