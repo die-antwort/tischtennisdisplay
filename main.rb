@@ -68,8 +68,10 @@ class Main
         run_match(@players, max_game_count, side_having_first_service)
         $logger.info "Match ended, asking for rematch"
         @score_board.display('Y', 'N', effect: :blink)
+        @last_activity_at = Time.now
         break if @input.get.right?
 
+        @last_activity_at = Time.now
         @players = @players.reverse
         $logger.info "Starting rematch"
       end
