@@ -18,8 +18,8 @@ INACTIVITY_TIMEOUT = 10 * 60 # seconds
 BEFORE_PLAYER_SELECTION_DELAY = 0.5 # seconds (should be long enough for all effects - especiall blink and scroll - to end)
 PLAYER_SELECTION_DELAY = 0.75 # seconds
 
-OFFICE_API_URL = "http://localhost:3000/resources/data_items".freeze
-OFFICE_API_TOKEN = "dev12345"
+OFFICE_API_URL = "https://api.buero.die-antwort.eu/resources/data_items".freeze
+OFFICE_API_TOKEN = ENV['API_TOKEN'].freeze
 
 class Main
   attr_reader :score_board, :match, :players
