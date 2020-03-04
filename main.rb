@@ -120,7 +120,7 @@ class Main
         data = {
           token: OFFICE_API_TOKEN,
           source: "tischtennisdisplay",
-          type: "DataItems::TableTennisResultDataItem",
+          type: "TableTennisResultDataItem",
           payload: {
             player1: players[0],
             player2: players[1],
